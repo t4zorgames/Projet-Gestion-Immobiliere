@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Tableau de bord</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary text-center p-3">
+                <h2>{{ nb_biens }}</h2>
+                <p>Biens immobiliers</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success text-center p-3">
+                <h2>{{ nb_proprietaires }}</h2>
+                <p>Propriétaires</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning text-center p-3">
+                <h2>{{ nb_contrats_actifs }}</h2>
+                <p>Contrats actifs</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info text-center p-3">
+                <h2>{{ nb_biens_disponibles }}</h2>
+                <p>Biens disponibles</p>
+            </div>
+        </div>
+    </div>
+
+    <h4>Accès rapide</h4>
+    <div class="d-flex gap-2 flex-wrap">
+        <a href="{% url 'biens_liste' %}" class="btn btn-outline-primary">📋 Liste des biens</a>
+        <a href="{% url 'biens_ajouter' %}" class="btn btn-outline-success">➕ Ajouter un bien</a>
+        <a href="{% url 'proprietaires_liste' %}" class="btn btn-outline-secondary">👤 Propriétaires</a>
+        <a href="{% url 'contrats_liste' %}" class="btn btn-outline-warning">📄 Contrats</a>
+    </div>
+</div>
+{% endblock %}

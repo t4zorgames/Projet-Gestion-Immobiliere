@@ -4,8 +4,7 @@ from . import views
 urlpatterns = [
     path(
         "",
-        views.page_placeholder,
-        {"title": "Accueil / Dashboard", "description": "Cette page affichera un résumé global du projet (statistiques principales et accès rapide)."},
+        views.dashboard,
         name="dashboard",
     ),
     path(
