@@ -1,18 +1,22 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
     path(
         "",
-        views.page_placeholder,
-        {"title": "Accueil / Dashboard", "description": "Cette page affichera un résumé global du projet (statistiques principales et accès rapide)."},
+        views.dashboard,
         name="dashboard",
     ),
     path(
         "connexion/",
-        views.page_placeholder,
-        {"title": "Connexion", "description": "Cette page contiendra le formulaire de connexion des utilisateurs."},
+        auth_views.LoginView.as_view(template_name="registration/login.html"),
         name="connexion",
+    ),
+    path(
+        "deconnexion/",
+        auth_views.LogoutView.as_view(),
+        name="deconnexion",
     ),
     path(
         "biens/",

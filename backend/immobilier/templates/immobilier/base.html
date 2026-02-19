@@ -43,7 +43,14 @@
         <a href="{% url 'proprietaires_liste' %}">Propriétaires</a>
         <a href="{% url 'contrats_liste' %}">Contrats</a>
         <a href="/admin/">Admin</a>
-        <a href="{% url 'connexion' %}">Connexion</a>
+        {% if request.user.is_authenticated %}
+            <form method="post" action="{% url 'deconnexion' %}" style="margin:0; display:inline;">
+                {% csrf_token %}
+                <button type="submit" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.95rem;padding:0;">Déconnexion</button>
+            </form>
+        {% else %}
+            <a href="{% url 'connexion' %}">Connexion</a>
+        {% endif %}
     </nav>
 
     <main class="container">

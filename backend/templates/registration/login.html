@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            margin: 0;
+        }
+        .card {
+            max-width: 420px;
+            margin: 6rem auto;
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+        h1 {
+            margin-top: 0;
+        }
+        form p {
+            margin-bottom: 1rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+        }
+        .error {
+            color: #b91c1c;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Connexion</h1>
+        <p>Connectez-vous pour accéder au dashboard et aux modules de gestion.</p>
+
+        {% if form.errors %}
+            <div class="error">Identifiants invalides. Veuillez réessayer.</div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Se connecter</button>
+        </form>
+    </div>
+</body>
+</html>
