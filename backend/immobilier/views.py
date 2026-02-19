@@ -1,6 +1,9 @@
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 from .forms import BienImmobilierForm, ContratLocationForm, ProprietaireForm
 from .models import BienImmobilier, ContratLocation, Proprietaire
 
@@ -194,3 +197,50 @@ def contrats_delete(request, pk):
         return redirect("contrats_liste")
     context = {"title": "Supprimer un contrat", "contrat": contrat}
     return render(request, "immobilier/contrats_confirm_delete.html", context)
+
+
+@login_required
+def contrat_pdf(request, pk):
+    contrat = get_object_or_404(ContratLocation.objects.select_related("bien", "bien__proprietaire"), pk=pk)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="contrat_{pk}.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    # Titre
+    p.setFont("Helvetica-Bold", 20)
+    p.drawString(200, height - 80, "CONTRAT DE LOCATION")
+
+    # Ligne de séparation
+    p.line(50, height - 95, width - 50, height - 95)
+
+    # Infos contrat
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 130, "Informations du contrat")
+
+    p.setFont("Helvetica", 11)
+    p.drawString(50, height - 155, f"Locataire : {contrat.locataire_nom}")
+    p.drawString(50, height - 175, f"Bien : {contrat.bien.titre}")
+    p.drawString(50, height - 195, f"Adresse : {contrat.bien.adresse}, {contrat.bien.ville}")
+    p.drawString(50, height - 215, f"Propriétaire : {contrat.bien.proprietaire.nom_complet}")
+    p.drawString(50, height - 235, f"Loyer mensuel : {contrat.bien.loyer_mensuel} FCFA")
+    p.drawString(50, height - 255, f"Caution : {contrat.caution} FCFA")
+    p.drawString(50, height - 275, f"Date début : {contrat.date_debut}")
+    p.drawString(50, height - 295, f"Date fin : {contrat.date_fin}")
+    p.drawString(50, height - 315, f"Statut : {'Actif' if contrat.actif else 'Inactif'}")
+
+    # Ligne de séparation
+    p.line(50, height - 335, width - 50, height - 335)
+
+    # Signatures
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 370, "Signatures")
+    p.setFont("Helvetica", 11)
+    p.drawString(50, height - 400, "Propriétaire : _______________________")
+    p.drawString(300, height - 400, "Locataire : _______________________")
+
+    p.showPage()
+    p.save()
+    return response

@@ -83,4 +83,9 @@ urlpatterns = [
         views.contrats_delete,
         name="contrats_supprimer",
     ),
+    path(
+        "contrats/<int:pk>/pdf/",
+        views.contrat_pdf,
+        name="contrat_pdf",
+    ),
 ]

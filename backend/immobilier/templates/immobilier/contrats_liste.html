@@ -95,6 +95,7 @@
     .actions {
         display: flex;
         gap: 0.4rem;
+        align-items: center;
     }
     .actions a {
         padding: 0.3rem 0.7rem;
@@ -107,6 +108,27 @@
     .btn-supprimer { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
     .btn-modifier:hover  { background: #dbeafe; }
     .btn-supprimer:hover { background: #fee2e2; }
+
+    .btn-pdf {
+        background: linear-gradient(135deg, #7c3aed, #5b21b6);
+        color: white;
+        border: none;
+        padding: 0.35rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        box-shadow: 0 2px 6px rgba(124, 58, 237, 0.4);
+        transition: all 0.2s;
+    }
+    .btn-pdf:hover {
+        background: linear-gradient(135deg, #6d28d9, #4c1d95);
+        box-shadow: 0 4px 10px rgba(124, 58, 237, 0.5);
+        transform: translateY(-1px);
+    }
 
     .empty-row td {
         text-align: center;
@@ -157,6 +179,7 @@
             <td class="actions">
                 <a href="{% url 'contrats_modifier' contrat.pk %}" class="btn-modifier">✏️ Modifier</a>
                 <a href="{% url 'contrats_supprimer' contrat.pk %}" class="btn-supprimer">🗑️ Supprimer</a>
+                <a href="{% url 'contrat_pdf' contrat.pk %}" class="btn-pdf">📥 Télécharger PDF</a>
             </td>
         </tr>
         {% empty %}
