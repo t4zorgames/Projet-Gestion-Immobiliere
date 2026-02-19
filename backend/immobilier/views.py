@@ -1,11 +1,10 @@
 from django.shortcuts import render
-from .models import BienImmobilier, ContratLocation, Proprietaire
 
 
-def home(request):
-	context = {
-		"nb_proprietaires": Proprietaire.objects.count(),
-		"nb_biens": BienImmobilier.objects.count(),
-		"nb_contrats_actifs": ContratLocation.objects.filter(actif=True).count(),
-	}
-	return render(request, "immobilier/home.html", context)
+def page_placeholder(request, title, description, pk=None):
+    context = {
+        "title": title,
+        "description": description,
+        "pk": pk,
+    }
+    return render(request, "immobilier/page_placeholder.html", context)
