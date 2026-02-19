@@ -3,23 +3,139 @@
 {% block title %}Liste des biens - Gestion Immobilière{% endblock %}
 
 {% block content %}
-<h1>Liste des biens</h1>
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .page-header h1 {
+        font-size: 1.6rem;
+        color: #1f2937;
+        margin: 0;
+    }
+    .btn-ajouter {
+        background: linear-gradient(135deg, #10b981, #047857);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    .btn-ajouter:hover { opacity: 0.85; }
 
-<form method="get" style="margin-bottom: 1rem;">
-    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher par titre ou ville">
+    .search-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .search-bar input {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+    .search-bar input:focus { border-color: #3b82f6; }
+    .search-bar button {
+        padding: 0.6rem 1.2rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    .search-bar button:hover { background: #1d4ed8; }
+    .search-bar a {
+        padding: 0.6rem 1rem;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 0.9rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+    }
+    .search-bar a:hover { background: #f3f4f6; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    thead {
+        background: #1f2937;
+        color: white;
+    }
+    thead th {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        font-weight: 500;
+    }
+    tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+        transition: background 0.15s;
+    }
+    tbody tr:hover { background: #f9fafb; }
+    tbody td {
+        padding: 0.8rem 1rem;
+        color: #374151;
+    }
+    .badge {
+        padding: 0.25rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+    .badge-oui { background: #d1fae5; color: #065f46; }
+    .badge-non { background: #fee2e2; color: #991b1b; }
+
+    .actions a {
+        padding: 0.3rem 0.7rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 500;
+    }
+    .btn-modifier { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .btn-supprimer { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-modifier:hover { background: #dbeafe; }
+    .btn-supprimer:hover { background: #fee2e2; }
+
+    .empty-row td {
+        text-align: center;
+        color: #9ca3af;
+        padding: 2rem;
+        font-style: italic;
+    }
+    .titre-link {
+        color: #1d4ed8;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .titre-link:hover { text-decoration: underline; }
+</style>
+
+<div class="page-header">
+    <h1>🏢 Liste des biens</h1>
+    <a href="{% url 'biens_ajouter' %}" class="btn-ajouter">➕ Ajouter un bien</a>
+</div>
+
+<form method="get" class="search-bar">
+    <input type="text" name="q" value="{{ q }}" placeholder="🔍 Rechercher par titre ou ville...">
     <button type="submit">Rechercher</button>
     <a href="{% url 'biens_liste' %}">Réinitialiser</a>
 </form>
 
-<p><a href="{% url 'biens_ajouter' %}">+ Ajouter un bien</a></p>
-
-<table border="1" cellpadding="8" cellspacing="0" width="100%">
+<table>
     <thead>
         <tr>
             <th>Titre</th>
             <th>Ville</th>
             <th>Type</th>
-            <th>Loyer</th>
+            <th>Loyer (FCFA)</th>
             <th>Propriétaire</th>
             <th>Disponible</th>
             <th>Actions</th>
@@ -27,22 +143,28 @@
     </thead>
     <tbody>
         {% for bien in biens %}
-            <tr>
-                <td><a href="{% url 'biens_detail' bien.pk %}">{{ bien.titre }}</a></td>
-                <td>{{ bien.ville }}</td>
-                <td>{{ bien.get_type_bien_display }}</td>
-                <td>{{ bien.loyer_mensuel }}</td>
-                <td>{{ bien.proprietaire.nom_complet }}</td>
-                <td>{% if bien.disponible %}Oui{% else %}Non{% endif %}</td>
-                <td>
-                    <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
-                    <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a>
-                </td>
-            </tr>
+        <tr>
+            <td><a href="{% url 'biens_detail' bien.pk %}" class="titre-link">{{ bien.titre }}</a></td>
+            <td>{{ bien.ville }}</td>
+            <td>{{ bien.get_type_bien_display }}</td>
+            <td>{{ bien.loyer_mensuel }}</td>
+            <td>{{ bien.proprietaire.nom_complet }}</td>
+            <td>
+                {% if bien.disponible %}
+                    <span class="badge badge-oui">✅ Oui</span>
+                {% else %}
+                    <span class="badge badge-non">❌ Non</span>
+                {% endif %}
+            </td>
+            <td class="actions" style="display:flex; gap:0.4rem;">
+                <a href="{% url 'biens_modifier' bien.pk %}" class="btn-modifier">✏️ Modifier</a>
+                <a href="{% url 'biens_supprimer' bien.pk %}" class="btn-supprimer">🗑️ Supprimer</a>
+            </td>
+        </tr>
         {% empty %}
-            <tr>
-                <td colspan="7">Aucun bien trouvé.</td>
-            </tr>
+        <tr class="empty-row">
+            <td colspan="7">Aucun bien trouvé.</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>

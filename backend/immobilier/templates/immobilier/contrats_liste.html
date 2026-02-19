@@ -3,17 +3,131 @@
 {% block title %}Liste des contrats - Gestion Immobilière{% endblock %}
 
 {% block content %}
-<h1>Liste des contrats</h1>
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .page-header h1 {
+        font-size: 1.6rem;
+        color: #1f2937;
+        margin: 0;
+    }
+    .btn-ajouter {
+        background: linear-gradient(135deg, #10b981, #047857);
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+    .btn-ajouter:hover { opacity: 0.85; }
 
-<form method="get" style="margin-bottom: 1rem;">
-    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher locataire, bien, propriétaire">
+    .search-bar {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .search-bar input {
+        flex: 1;
+        padding: 0.6rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+    }
+    .search-bar input:focus { border-color: #3b82f6; }
+    .search-bar button {
+        padding: 0.6rem 1.2rem;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+    .search-bar button:hover { background: #1d4ed8; }
+    .search-bar a {
+        padding: 0.6rem 1rem;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 0.9rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+    }
+    .search-bar a:hover { background: #f3f4f6; }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    thead {
+        background: #1f2937;
+        color: white;
+    }
+    thead th {
+        padding: 0.8rem 1rem;
+        text-align: left;
+        font-weight: 500;
+    }
+    tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+        transition: background 0.15s;
+    }
+    tbody tr:hover { background: #f9fafb; }
+    tbody td {
+        padding: 0.8rem 1rem;
+        color: #374151;
+    }
+    .badge {
+        padding: 0.25rem 0.7rem;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+    .badge-actif   { background: #d1fae5; color: #065f46; }
+    .badge-inactif { background: #fee2e2; color: #991b1b; }
+
+    .actions {
+        display: flex;
+        gap: 0.4rem;
+    }
+    .actions a {
+        padding: 0.3rem 0.7rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.82rem;
+        font-weight: 500;
+    }
+    .btn-modifier  { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .btn-supprimer { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-modifier:hover  { background: #dbeafe; }
+    .btn-supprimer:hover { background: #fee2e2; }
+
+    .empty-row td {
+        text-align: center;
+        color: #9ca3af;
+        padding: 2rem;
+        font-style: italic;
+    }
+</style>
+
+<div class="page-header">
+    <h1>📄 Liste des contrats</h1>
+    <a href="{% url 'contrats_ajouter' %}" class="btn-ajouter">➕ Ajouter un contrat</a>
+</div>
+
+<form method="get" class="search-bar">
+    <input type="text" name="q" value="{{ q }}" placeholder="🔍 Rechercher locataire, bien, propriétaire...">
     <button type="submit">Rechercher</button>
     <a href="{% url 'contrats_liste' %}">Réinitialiser</a>
 </form>
 
-<p><a href="{% url 'contrats_ajouter' %}">+ Ajouter un contrat</a></p>
-
-<table border="1" cellpadding="8" cellspacing="0" width="100%">
+<table>
     <thead>
         <tr>
             <th>Locataire</th>
@@ -27,22 +141,28 @@
     </thead>
     <tbody>
         {% for contrat in contrats %}
-            <tr>
-                <td>{{ contrat.locataire_nom }}</td>
-                <td>{{ contrat.bien.titre }}</td>
-                <td>{{ contrat.bien.proprietaire.nom_complet }}</td>
-                <td>{{ contrat.date_debut }}</td>
-                <td>{{ contrat.date_fin }}</td>
-                <td>{% if contrat.actif %}Actif{% else %}Inactif{% endif %}</td>
-                <td>
-                    <a href="{% url 'contrats_modifier' contrat.pk %}">Modifier</a> |
-                    <a href="{% url 'contrats_supprimer' contrat.pk %}">Supprimer</a>
-                </td>
-            </tr>
+        <tr>
+            <td>{{ contrat.locataire_nom }}</td>
+            <td>{{ contrat.bien.titre }}</td>
+            <td>{{ contrat.bien.proprietaire.nom_complet }}</td>
+            <td>{{ contrat.date_debut }}</td>
+            <td>{{ contrat.date_fin }}</td>
+            <td>
+                {% if contrat.actif %}
+                    <span class="badge badge-actif">✅ Actif</span>
+                {% else %}
+                    <span class="badge badge-inactif">❌ Inactif</span>
+                {% endif %}
+            </td>
+            <td class="actions">
+                <a href="{% url 'contrats_modifier' contrat.pk %}" class="btn-modifier">✏️ Modifier</a>
+                <a href="{% url 'contrats_supprimer' contrat.pk %}" class="btn-supprimer">🗑️ Supprimer</a>
+            </td>
+        </tr>
         {% empty %}
-            <tr>
-                <td colspan="7">Aucun contrat trouvé.</td>
-            </tr>
+        <tr class="empty-row">
+            <td colspan="7">Aucun contrat trouvé.</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
