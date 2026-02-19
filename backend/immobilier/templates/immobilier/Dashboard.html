@@ -1,42 +1,118 @@
 {% extends "base.html" %}
 
+{% block title %}Dashboard — Gestion Immobilière{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h1 class="mb-4">Tableau de bord</h1>
+<style>
+    .dashboard-header {
+        margin-bottom: 2rem;
+    }
+    .dashboard-header h1 {
+        font-size: 1.8rem;
+        color: #1f2937;
+        margin-bottom: 0.3rem;
+    }
+    .dashboard-header p {
+        color: #6b7280;
+        font-size: 0.95rem;
+    }
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .card {
+        border-radius: 10px;
+        padding: 1.2rem 1.5rem;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    .card .number {
+        font-size: 2.2rem;
+        font-weight: bold;
+        line-height: 1;
+    }
+    .card .label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+    }
+    .card-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+    .card-green  { background: linear-gradient(135deg, #10b981, #047857); }
+    .card-orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
+    .card-teal   { background: linear-gradient(135deg, #06b6d4, #0e7490); }
 
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary text-center p-3">
-                <h2>{{ nb_biens }}</h2>
-                <p>Biens immobiliers</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success text-center p-3">
-                <h2>{{ nb_proprietaires }}</h2>
-                <p>Propriétaires</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning text-center p-3">
-                <h2>{{ nb_contrats_actifs }}</h2>
-                <p>Contrats actifs</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info text-center p-3">
-                <h2>{{ nb_biens_disponibles }}</h2>
-                <p>Biens disponibles</p>
-            </div>
-        </div>
+    .section-title {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #374151;
+        margin-bottom: 0.8rem;
+        border-left: 4px solid #3b82f6;
+        padding-left: 0.6rem;
+    }
+    .quick-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+    }
+    .quick-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: opacity 0.2s;
+    }
+    .quick-link:hover { opacity: 0.85; }
+    .ql-blue   { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .ql-green  { background: #f0fdf4; color: #047857; border: 1px solid #bbf7d0; }
+    .ql-purple { background: #faf5ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+    .ql-yellow { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+</style>
+
+<div class="dashboard-header">
+    <h1>🏠 Tableau de bord</h1>
+    <p>Bienvenue, {{ request.user.username }} — voici un résumé de votre portefeuille immobilier.</p>
+</div>
+
+<!-- Compteurs -->
+<div class="cards-grid">
+    <div class="card card-blue">
+        <span class="number">{{ nb_biens }}</span>
+        <span class="label">🏢 Biens immobiliers</span>
     </div>
-
-    <h4>Accès rapide</h4>
-    <div class="d-flex gap-2 flex-wrap">
-        <a href="{% url 'biens_liste' %}" class="btn btn-outline-primary">📋 Liste des biens</a>
-        <a href="{% url 'biens_ajouter' %}" class="btn btn-outline-success">➕ Ajouter un bien</a>
-        <a href="{% url 'proprietaires_liste' %}" class="btn btn-outline-secondary">👤 Propriétaires</a>
-        <a href="{% url 'contrats_liste' %}" class="btn btn-outline-warning">📄 Contrats</a>
+    <div class="card card-green">
+        <span class="number">{{ nb_proprietaires }}</span>
+        <span class="label">👤 Propriétaires</span>
+    </div>
+    <div class="card card-orange">
+        <span class="number">{{ nb_contrats_actifs }}</span>
+        <span class="label">📄 Contrats actifs</span>
+    </div>
+    <div class="card card-teal">
+        <span class="number">{{ nb_biens_disponibles }}</span>
+        <span class="label">✅ Biens disponibles</span>
     </div>
 </div>
+
+<!-- Liens rapides -->
+<div class="section-title">Accès rapide</div>
+<div class="quick-links">
+    <a href="{% url 'biens_liste' %}" class="quick-link ql-blue">📋 Liste des biens</a>
+    <a href="{% url 'biens_ajouter' %}" class="quick-link ql-green">➕ Ajouter un bien</a>
+    <a href="{% url 'proprietaires_liste' %}" class="quick-link ql-purple">👤 Propriétaires</a>
+    <a href="{% url 'contrats_liste' %}" class="quick-link ql-yellow">📄 Contrats</a>
+</div>
+
 {% endblock %}
+<script>
+    // Rafraîchissement automatique toutes les 30 secondes
+    setTimeout(function() {
+        location.reload();
+    }, 30000);
+</script>
