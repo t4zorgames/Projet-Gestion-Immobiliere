@@ -1,0 +1,49 @@
+{% extends "immobilier/base.html" %}
+
+{% block title %}Liste des contrats - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Liste des contrats</h1>
+
+<form method="get" style="margin-bottom: 1rem;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher locataire, bien, propriétaire">
+    <button type="submit">Rechercher</button>
+    <a href="{% url 'contrats_liste' %}">Réinitialiser</a>
+</form>
+
+<p><a href="{% url 'contrats_ajouter' %}">+ Ajouter un contrat</a></p>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Locataire</th>
+            <th>Bien</th>
+            <th>Propriétaire</th>
+            <th>Date début</th>
+            <th>Date fin</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contrat in contrats %}
+            <tr>
+                <td>{{ contrat.locataire_nom }}</td>
+                <td>{{ contrat.bien.titre }}</td>
+                <td>{{ contrat.bien.proprietaire.nom_complet }}</td>
+                <td>{{ contrat.date_debut }}</td>
+                <td>{{ contrat.date_fin }}</td>
+                <td>{% if contrat.actif %}Actif{% else %}Inactif{% endif %}</td>
+                <td>
+                    <a href="{% url 'contrats_modifier' contrat.pk %}">Modifier</a> |
+                    <a href="{% url 'contrats_supprimer' contrat.pk %}">Supprimer</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7">Aucun contrat trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

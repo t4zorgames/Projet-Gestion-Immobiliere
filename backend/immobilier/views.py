@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import BienImmobilierForm
+from .forms import BienImmobilierForm, ContratLocationForm
 from .models import BienImmobilier, ContratLocation, Proprietaire
 
 
@@ -103,3 +103,87 @@ def biens_detail(request, pk):
         "bien": bien,
     }
     return render(request, "immobilier/biens_detail.html", context)
+
+
+def _mettre_a_jour_disponibilite_bien(bien):
+    a_contrat_actif = bien.contrats.filter(actif=True).exists()
+    bien.disponible = not a_contrat_actif
+    bien.save(update_fields=["disponible"])
+
+
+@login_required
+def contrats_liste(request):
+    recherche = request.GET.get("q", "").strip()
+    contrats = ContratLocation.objects.select_related("bien", "bien__proprietaire").order_by("-date_debut")
+
+    if recherche:
+        contrats = contrats.filter(
+            Q(locataire_nom__icontains=recherche)
+            | Q(bien__titre__icontains=recherche)
+            | Q(bien__proprietaire__nom_complet__icontains=recherche)
+        )
+
+    context = {
+        "title": "Liste des contrats",
+        "contrats": contrats,
+        "q": recherche,
+    }
+    return render(request, "immobilier/contrats_liste.html", context)
+
+
+@login_required
+def contrats_create(request):
+    if request.method == "POST":
+        form = ContratLocationForm(request.POST)
+        if form.is_valid():
+            contrat = form.save()
+            _mettre_a_jour_disponibilite_bien(contrat.bien)
+            return redirect("contrats_liste")
+    else:
+        form = ContratLocationForm()
+
+    context = {
+        "title": "Ajouter un contrat",
+        "form": form,
+    }
+    return render(request, "immobilier/contrats_form.html", context)
+
+
+@login_required
+def contrats_update(request, pk):
+    contrat = get_object_or_404(ContratLocation, pk=pk)
+    ancien_bien = contrat.bien
+
+    if request.method == "POST":
+        form = ContratLocationForm(request.POST, instance=contrat)
+        if form.is_valid():
+            contrat = form.save()
+            _mettre_a_jour_disponibilite_bien(ancien_bien)
+            _mettre_a_jour_disponibilite_bien(contrat.bien)
+            return redirect("contrats_liste")
+    else:
+        form = ContratLocationForm(instance=contrat)
+
+    context = {
+        "title": "Modifier un contrat",
+        "form": form,
+        "contrat": contrat,
+    }
+    return render(request, "immobilier/contrats_form.html", context)
+
+
+@login_required
+def contrats_delete(request, pk):
+    contrat = get_object_or_404(ContratLocation.objects.select_related("bien"), pk=pk)
+    bien = contrat.bien
+
+    if request.method == "POST":
+        contrat.delete()
+        _mettre_a_jour_disponibilite_bien(bien)
+        return redirect("contrats_liste")
+
+    context = {
+        "title": "Supprimer un contrat",
+        "contrat": contrat,
+    }
+    return render(request, "immobilier/contrats_confirm_delete.html", context)

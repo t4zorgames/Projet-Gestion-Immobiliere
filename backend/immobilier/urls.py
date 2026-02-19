@@ -69,26 +69,22 @@ urlpatterns = [
     ),
     path(
         "contrats/",
-        views.page_placeholder,
-        {"title": "Liste des contrats", "description": "Cette page affichera les contrats de location et leur statut (actif/inactif)."},
+        views.contrats_liste,
         name="contrats_liste",
     ),
     path(
         "contrats/nouveau/",
-        views.page_placeholder,
-        {"title": "Ajouter un contrat", "description": "Cette page contiendra le formulaire d'ajout d'un contrat de location."},
+        views.contrats_create,
         name="contrats_ajouter",
     ),
     path(
         "contrats/<int:pk>/modifier/",
-        views.page_placeholder,
-        {"title": "Modifier un contrat", "description": "Cette page contiendra le formulaire de modification d'un contrat de location."},
+        views.contrats_update,
         name="contrats_modifier",
     ),
     path(
         "contrats/<int:pk>/supprimer/",
-        views.page_placeholder,
-        {"title": "Supprimer un contrat", "description": "Cette page demandera la confirmation avant suppression d'un contrat de location."},
+        views.contrats_delete,
         name="contrats_supprimer",
     ),
 ]
