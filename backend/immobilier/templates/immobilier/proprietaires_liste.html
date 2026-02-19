@@ -1,0 +1,45 @@
+{% extends "immobilier/base.html" %}
+
+{% block title %}Liste des propriétaires - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Liste des propriétaires</h1>
+
+<form method="get" style="margin-bottom: 1rem;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher nom, email, téléphone">
+    <button type="submit">Rechercher</button>
+    <a href="{% url 'proprietaires_liste' %}">Réinitialiser</a>
+</form>
+
+<p><a href="{% url 'proprietaires_ajouter' %}">+ Ajouter un propriétaire</a></p>
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Nom complet</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Nombre de biens</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for proprietaire in proprietaires %}
+            <tr>
+                <td>{{ proprietaire.nom_complet }}</td>
+                <td>{{ proprietaire.email|default:"-" }}</td>
+                <td>{{ proprietaire.telephone|default:"-" }}</td>
+                <td>{{ proprietaire.biens.count }}</td>
+                <td>
+                    <a href="{% url 'proprietaires_modifier' proprietaire.pk %}">Modifier</a> |
+                    <a href="{% url 'proprietaires_supprimer' proprietaire.pk %}">Supprimer</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">Aucun propriétaire trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

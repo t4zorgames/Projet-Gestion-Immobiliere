@@ -4,6 +4,7 @@
 
 {% block content %}
 <h1>{{ title }}</h1>
+<p>Choisissez d'abord un propriétaire pour filtrer automatiquement ses biens disponibles.</p>
 
 <form method="post">
     {% csrf_token %}
@@ -11,4 +12,24 @@
     <button type="submit">Enregistrer</button>
     <a href="{% url 'contrats_liste' %}">Annuler</a>
 </form>
+
+<script>
+    (function () {
+        const ownerSelect = document.getElementById('id_proprietaire');
+        if (!ownerSelect) return;
+
+        ownerSelect.addEventListener('change', function () {
+            const ownerId = ownerSelect.value;
+            const url = new URL(window.location.href);
+
+            if (ownerId) {
+                url.searchParams.set('proprietaire', ownerId);
+            } else {
+                url.searchParams.delete('proprietaire');
+            }
+
+            window.location.href = url.pathname + url.search;
+        });
+    })();
+</script>
 {% endblock %}

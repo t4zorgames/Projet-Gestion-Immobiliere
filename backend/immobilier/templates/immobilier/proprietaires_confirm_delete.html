@@ -1,0 +1,15 @@
+{% extends "immobilier/base.html" %}
+
+{% block title %}Supprimer un propriétaire - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Supprimer un propriétaire</h1>
+<p>Voulez-vous vraiment supprimer <strong>{{ proprietaire.nom_complet }}</strong> ?</p>
+<p>Attention : les biens liés à ce propriétaire seront aussi supprimés.</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirmer la suppression</button>
+    <a href="{% url 'proprietaires_liste' %}">Annuler</a>
+</form>
+{% endblock %}

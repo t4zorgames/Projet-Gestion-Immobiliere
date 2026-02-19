@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from .forms import BienImmobilierForm, ContratLocationForm
+from .forms import BienImmobilierForm, ContratLocationForm, ProprietaireForm
 from .models import BienImmobilier, ContratLocation, Proprietaire
 
 
@@ -105,6 +105,78 @@ def biens_detail(request, pk):
     return render(request, "immobilier/biens_detail.html", context)
 
 
+@login_required
+def proprietaires_liste(request):
+    recherche = request.GET.get("q", "").strip()
+    proprietaires = Proprietaire.objects.all().order_by("nom_complet")
+
+    if recherche:
+        proprietaires = proprietaires.filter(
+            Q(nom_complet__icontains=recherche)
+            | Q(email__icontains=recherche)
+            | Q(telephone__icontains=recherche)
+        )
+
+    context = {
+        "title": "Liste des propriétaires",
+        "proprietaires": proprietaires,
+        "q": recherche,
+    }
+    return render(request, "immobilier/proprietaires_liste.html", context)
+
+
+@login_required
+def proprietaires_create(request):
+    if request.method == "POST":
+        form = ProprietaireForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("proprietaires_liste")
+    else:
+        form = ProprietaireForm()
+
+    context = {
+        "title": "Ajouter un propriétaire",
+        "form": form,
+    }
+    return render(request, "immobilier/proprietaires_form.html", context)
+
+
+@login_required
+def proprietaires_update(request, pk):
+    proprietaire = get_object_or_404(Proprietaire, pk=pk)
+
+    if request.method == "POST":
+        form = ProprietaireForm(request.POST, instance=proprietaire)
+        if form.is_valid():
+            form.save()
+            return redirect("proprietaires_liste")
+    else:
+        form = ProprietaireForm(instance=proprietaire)
+
+    context = {
+        "title": "Modifier un propriétaire",
+        "form": form,
+        "proprietaire": proprietaire,
+    }
+    return render(request, "immobilier/proprietaires_form.html", context)
+
+
+@login_required
+def proprietaires_delete(request, pk):
+    proprietaire = get_object_or_404(Proprietaire, pk=pk)
+
+    if request.method == "POST":
+        proprietaire.delete()
+        return redirect("proprietaires_liste")
+
+    context = {
+        "title": "Supprimer un propriétaire",
+        "proprietaire": proprietaire,
+    }
+    return render(request, "immobilier/proprietaires_confirm_delete.html", context)
+
+
 def _mettre_a_jour_disponibilite_bien(bien):
     a_contrat_actif = bien.contrats.filter(actif=True).exists()
     bien.disponible = not a_contrat_actif
@@ -140,7 +212,9 @@ def contrats_create(request):
             _mettre_a_jour_disponibilite_bien(contrat.bien)
             return redirect("contrats_liste")
     else:
-        form = ContratLocationForm()
+        proprietaire_id = request.GET.get("proprietaire")
+        initial = {"proprietaire": proprietaire_id} if proprietaire_id else None
+        form = ContratLocationForm(initial=initial)
 
     context = {
         "title": "Ajouter un contrat",

@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 
 class Proprietaire(models.Model):
@@ -71,7 +72,7 @@ class BienImmobilier(models.Model):
 	adresse = models.CharField(max_length=255)
 	ville = models.CharField(max_length=100, choices=VILLE_CHOICES)
 	superficie_m2 = models.PositiveIntegerField()
-	loyer_mensuel = models.DecimalField(max_digits=10, decimal_places=2)
+	loyer_mensuel = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
 	type_bien = models.CharField(max_length=30, choices=TYPE_BIEN_CHOICES)
 	proprietaire = models.ForeignKey(Proprietaire, on_delete=models.CASCADE, related_name="biens")
 	disponible = models.BooleanField(default=True)
@@ -86,7 +87,7 @@ class ContratLocation(models.Model):
 	locataire_nom = models.CharField(max_length=120)
 	date_debut = models.DateField()
 	date_fin = models.DateField()
-	caution = models.DecimalField(max_digits=10, decimal_places=2)
+	caution = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
 	actif = models.BooleanField(default=True)
 
 	class Meta:

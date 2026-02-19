@@ -45,26 +45,22 @@ urlpatterns = [
     ),
     path(
         "proprietaires/",
-        views.page_placeholder,
-        {"title": "Liste des propriétaires", "description": "Cette page affichera les propriétaires enregistrés dans le système."},
+        views.proprietaires_liste,
         name="proprietaires_liste",
     ),
     path(
         "proprietaires/nouveau/",
-        views.page_placeholder,
-        {"title": "Ajouter un propriétaire", "description": "Cette page contiendra le formulaire d'ajout d'un propriétaire."},
+        views.proprietaires_create,
         name="proprietaires_ajouter",
     ),
     path(
         "proprietaires/<int:pk>/modifier/",
-        views.page_placeholder,
-        {"title": "Modifier un propriétaire", "description": "Cette page contiendra le formulaire de modification d'un propriétaire."},
+        views.proprietaires_update,
         name="proprietaires_modifier",
     ),
     path(
         "proprietaires/<int:pk>/supprimer/",
-        views.page_placeholder,
-        {"title": "Supprimer un propriétaire", "description": "Cette page demandera la confirmation avant suppression d'un propriétaire."},
+        views.proprietaires_delete,
         name="proprietaires_supprimer",
     ),
     path(
