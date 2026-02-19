@@ -1,0 +1,22 @@
+{% extends "immobilier/base.html" %}
+
+{% block title %}Détail du bien - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Détail du bien</h1>
+
+<p><strong>Titre :</strong> {{ bien.titre }}</p>
+<p><strong>Adresse :</strong> {{ bien.adresse }}</p>
+<p><strong>Ville :</strong> {{ bien.ville }}</p>
+<p><strong>Superficie (m²) :</strong> {{ bien.superficie_m2 }}</p>
+<p><strong>Loyer mensuel :</strong> {{ bien.loyer_mensuel }}</p>
+<p><strong>Type :</strong> {{ bien.get_type_bien_display }}</p>
+<p><strong>Propriétaire :</strong> {{ bien.proprietaire.nom_complet }}</p>
+<p><strong>Disponible :</strong> {% if bien.disponible %}Oui{% else %}Non{% endif %}</p>
+
+<p>
+    <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
+    <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a> |
+    <a href="{% url 'biens_liste' %}">Retour à la liste</a>
+</p>
+{% endblock %}

@@ -16,6 +16,27 @@ class BienImmobilier(models.Model):
 	TERRAIN = "terrain"
 	LOCAL_COMMERCIAL = "local_commercial"
 
+	YAOUNDE = "yaounde"
+	DOUALA = "douala"
+	BAFOUSSAM = "bafoussam"
+	BAMENDA = "bamenda"
+	GAROUA = "garoua"
+	MAROUA = "maroua"
+	NGAOUNDERE = "ngaoundere"
+	BERTOUA = "bertoua"
+	EBOLOWA = "ebolowa"
+	KRIBI = "kribi"
+	LIMBE = "limbe"
+	BUEA = "buea"
+	KUMBA = "kumba"
+	DSCHANG = "dschang"
+	NKONGSAMBA = "nkongsamba"
+	EDEA = "edea"
+	MBALMAYO = "mbalmayo"
+	SANGMELIMA = "sangmelima"
+	MEIGANGA = "meiganga"
+	KOUSSERI = "kousseri"
+
 	TYPE_BIEN_CHOICES = [
 		(APPARTEMENT, "Appartement"),
 		(MAISON, "Maison"),
@@ -23,9 +44,32 @@ class BienImmobilier(models.Model):
 		(LOCAL_COMMERCIAL, "Local commercial"),
 	]
 
+	VILLE_CHOICES = [
+		(YAOUNDE, "Yaoundé"),
+		(DOUALA, "Douala"),
+		(BAFOUSSAM, "Bafoussam"),
+		(BAMENDA, "Bamenda"),
+		(GAROUA, "Garoua"),
+		(MAROUA, "Maroua"),
+		(NGAOUNDERE, "Ngaoundéré"),
+		(BERTOUA, "Bertoua"),
+		(EBOLOWA, "Ebolowa"),
+		(KRIBI, "Kribi"),
+		(LIMBE, "Limbé"),
+		(BUEA, "Buéa"),
+		(KUMBA, "Kumba"),
+		(DSCHANG, "Dschang"),
+		(NKONGSAMBA, "Nkongsamba"),
+		(EDEA, "Edéa"),
+		(MBALMAYO, "Mbalmayo"),
+		(SANGMELIMA, "Sangmélima"),
+		(MEIGANGA, "Meiganga"),
+		(KOUSSERI, "Kousséri"),
+	]
+
 	titre = models.CharField(max_length=150)
 	adresse = models.CharField(max_length=255)
-	ville = models.CharField(max_length=100)
+	ville = models.CharField(max_length=100, choices=VILLE_CHOICES)
 	superficie_m2 = models.PositiveIntegerField()
 	loyer_mensuel = models.DecimalField(max_digits=10, decimal_places=2)
 	type_bien = models.CharField(max_length=30, choices=TYPE_BIEN_CHOICES)

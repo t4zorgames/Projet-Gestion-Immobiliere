@@ -16,32 +16,27 @@ urlpatterns = [
     ),
     path(
         "biens/",
-        views.page_placeholder,
-        {"title": "Liste des biens", "description": "Cette page affichera la liste des biens immobiliers avec recherche et filtres simples."},
+        views.biens_liste,
         name="biens_liste",
     ),
     path(
         "biens/nouveau/",
-        views.page_placeholder,
-        {"title": "Ajouter un bien", "description": "Cette page contiendra le formulaire d'ajout d'un bien immobilier."},
+        views.biens_create,
         name="biens_ajouter",
     ),
     path(
         "biens/<int:pk>/modifier/",
-        views.page_placeholder,
-        {"title": "Modifier un bien", "description": "Cette page contiendra le formulaire de modification d'un bien immobilier."},
+        views.biens_update,
         name="biens_modifier",
     ),
     path(
         "biens/<int:pk>/supprimer/",
-        views.page_placeholder,
-        {"title": "Supprimer un bien", "description": "Cette page demandera la confirmation avant suppression d'un bien immobilier."},
+        views.biens_delete,
         name="biens_supprimer",
     ),
     path(
         "biens/<int:pk>/",
-        views.page_placeholder,
-        {"title": "Détail d'un bien", "description": "Cette page présentera les informations détaillées d'un bien et ses contrats liés."},
+        views.biens_detail,
         name="biens_detail",
     ),
     path(
