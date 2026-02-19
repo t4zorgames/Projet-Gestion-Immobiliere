@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Immobilière</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+            background: #f7f7f7;
+            color: #222;
+        }
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h1 { margin-top: 0; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .card {
+            background: #f1f5f9;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Projet de Gestion Immobilière</h1>
+        <p>Base Django initiale prête pour le développement académique.</p>
+
+        <div class="stats">
+            <div class="card">
+                <div>Propriétaires</div>
+                <div class="value">{{ nb_proprietaires }}</div>
+            </div>
+            <div class="card">
+                <div>Biens</div>
+                <div class="value">{{ nb_biens }}</div>
+            </div>
+            <div class="card">
+                <div>Contrats actifs</div>
+                <div class="value">{{ nb_contrats_actifs }}</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
