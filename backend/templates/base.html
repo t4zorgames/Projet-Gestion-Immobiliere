@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Gestion Immobilière{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,22 +14,74 @@
         }
         .navbar {
             background: #1f2937;
-            padding: 0.8rem 1rem;
+            padding: 0 1.5rem;
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            align-items: center;
+            height: 56px;
+        }
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            flex: 1;
         }
         .navbar a {
-            color: #fff;
+            color: #d1d5db;
             text-decoration: none;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
         .navbar a:hover {
-            text-decoration: underline;
+            background: #374151;
+            color: white;
         }
+        .navbar a.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Bouton déconnexion à droite */
+        .navbar-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.1rem;
+        }
+        .navbar-right .username {
+            color: #9ca3af;
+            font-size: 0.72rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .btn-deconnexion {
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: white !important;
+            border: none;
+            padding: 0.35rem 0.9rem !important;
+            border-radius: 6px !important;
+            font-size: 0.85rem !important;
+            cursor: pointer;
+            display: flex !important;
+            align-items: center;
+            gap: 0.4rem;
+            transition: opacity 0.2s !important;
+            font-family: Arial, sans-serif;
+        }
+        .btn-deconnexion:hover {
+            opacity: 0.85;
+            background: linear-gradient(135deg, #dc2626, #991b1b) !important;
+            text-decoration: none !important;
+        }
+
         .container {
-            max-width: 900px;
-            margin: 1.5rem auto;
+            max-width: 100%;
+            margin: 1.5rem 2rem;
             background: white;
             padding: 1.5rem;
             border-radius: 8px;
@@ -38,19 +91,30 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="{% url 'dashboard' %}">Accueil</a>
-        <a href="{% url 'biens_liste' %}">Biens</a>
-        <a href="{% url 'proprietaires_liste' %}">Propriétaires</a>
-        <a href="{% url 'contrats_liste' %}">Contrats</a>
-        <a href="/admin/">Admin</a>
-        {% if request.user.is_authenticated %}
-            <form method="post" action="{% url 'deconnexion' %}" style="margin:0; display:inline;">
-                {% csrf_token %}
-                <button type="submit" style="background:none;border:none;color:#fff;cursor:pointer;font-size:0.95rem;padding:0;">Déconnexion</button>
-            </form>
-        {% else %}
-            <a href="{% url 'connexion' %}">Connexion</a>
-        {% endif %}
+        <div class="navbar-left">
+            <a href="{% url 'dashboard' %}"><i class="fa-solid fa-house"></i> Accueil</a>
+            <a href="{% url 'biens_liste' %}"><i class="fa-solid fa-building"></i> Biens</a>
+            <a href="{% url 'proprietaires_liste' %}"><i class="fa-solid fa-users"></i> Propriétaires</a>
+            <a href="{% url 'contrats_liste' %}"><i class="fa-solid fa-file-contract"></i> Contrats</a>
+            <a href="/admin/"><i class="fa-solid fa-screwdriver-wrench"></i> Admin</a>
+        </div>
+
+        <div class="navbar-right">
+            {% if request.user.is_authenticated %}
+                <span class="username">
+                    <i class="fa-solid fa-circle-user"></i>
+                    {{ request.user.username }}
+                </span>
+                <form method="post" action="{% url 'deconnexion' %}" style="margin:0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-deconnexion">
+                        <i class="fa-solid fa-right-from-bracket"></i> Déconnexion
+                    </button>
+                </form>
+            {% else %}
+                <a href="{% url 'connexion' %}"><i class="fa-solid fa-right-to-bracket"></i> Connexion</a>
+            {% endif %}
+        </div>
     </nav>
 
     <main class="container">

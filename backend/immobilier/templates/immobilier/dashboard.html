@@ -1,118 +1,200 @@
 {% extends "base.html" %}
-
 {% block title %}Dashboard — Gestion Immobilière{% endblock %}
-
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-    .dashboard-header {
+    .page-wrapper {
+        background: linear-gradient(135deg, #f0f4ff 0%, #fafafa 100%);
+        margin: -1.5rem;
+        padding: 2rem;
+        min-height: 80vh;
+        border-radius: 8px;
+    }
+
+    /* Header */
+    .dashboard-hero {
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        border-radius: 16px;
+        padding: 2rem;
         margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+        color: white;
     }
-    .dashboard-header h1 {
+    .dashboard-hero h1 {
         font-size: 1.8rem;
-        color: #1f2937;
-        margin-bottom: 0.3rem;
+        margin: 0 0 0.3rem 0;
     }
-    .dashboard-header p {
-        color: #6b7280;
-        font-size: 0.95rem;
+    .dashboard-hero p {
+        opacity: 0.85;
+        font-size: 0.9rem;
+        margin: 0;
     }
+    .hero-icon {
+        font-size: 4rem;
+        opacity: 0.3;
+    }
+
+    /* Compteurs */
     .cards-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 1rem;
         margin-bottom: 2rem;
     }
     .card {
-        border-radius: 10px;
-        padding: 1.2rem 1.5rem;
+        border-radius: 14px;
+        padding: 1.5rem;
         color: white;
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.5rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        transition: transform 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card .card-icon {
+        font-size: 1.8rem;
+        opacity: 0.3;
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
     }
     .card .number {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         font-weight: bold;
         line-height: 1;
     }
     .card .label {
         font-size: 0.85rem;
         opacity: 0.9;
+        font-weight: 500;
     }
     .card-blue   { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
     .card-green  { background: linear-gradient(135deg, #10b981, #047857); }
     .card-orange { background: linear-gradient(135deg, #f59e0b, #b45309); }
     .card-teal   { background: linear-gradient(135deg, #06b6d4, #0e7490); }
 
+    /* Accès rapide */
+    .section-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        margin-bottom: 1.5rem;
+    }
     .section-title {
         font-size: 1rem;
         font-weight: bold;
         color: #374151;
-        margin-bottom: 0.8rem;
-        border-left: 4px solid #3b82f6;
-        padding-left: 0.6rem;
-    }
-    .quick-links {
+        margin-bottom: 1.2rem;
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.8rem;
-    }
-    .quick-link {
-        display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.6rem 1.2rem;
-        border-radius: 8px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: opacity 0.2s;
     }
-    .quick-link:hover { opacity: 0.85; }
+    .section-title i { color: #3b82f6; }
+
+    .quick-links {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+    .quick-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 1.2rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        text-align: center;
+    }
+    .quick-link i { font-size: 1.5rem; }
+    .quick-link:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .ql-blue   { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
     .ql-green  { background: #f0fdf4; color: #047857; border: 1px solid #bbf7d0; }
     .ql-purple { background: #faf5ff; color: #7c3aed; border: 1px solid #ddd6fe; }
     .ql-yellow { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+
+    /* Refresh indicator */
+    .refresh-info {
+        text-align: right;
+        font-size: 0.78rem;
+        color: #9ca3af;
+        margin-top: 1rem;
+    }
 </style>
 
-<div class="dashboard-header">
-    <h1>🏠 Tableau de bord</h1>
-    <p>Bienvenue, {{ request.user.username }} — voici un résumé de votre portefeuille immobilier.</p>
+<div class="page-wrapper">
+
+    <!-- Hero -->
+    <div class="dashboard-hero">
+        <div>
+            <h1><i class="fa-solid fa-house"></i> Tableau de bord</h1>
+            <p>Bienvenue, <strong>{{ request.user.username }}</strong> — voici un résumé de votre portefeuille immobilier.</p>
+        </div>
+        <div class="hero-icon"><i class="fa-solid fa-building"></i></div>
+    </div>
+
+    <!-- Compteurs -->
+    <div class="cards-grid">
+        <div class="card card-blue">
+            <i class="fa-solid fa-building card-icon"></i>
+            <span class="number">{{ nb_biens }}</span>
+            <span class="label">Biens immobiliers</span>
+        </div>
+        <div class="card card-green">
+            <i class="fa-solid fa-user card-icon"></i>
+            <span class="number">{{ nb_proprietaires }}</span>
+            <span class="label">Propriétaires</span>
+        </div>
+        <div class="card card-orange">
+            <i class="fa-solid fa-file-contract card-icon"></i>
+            <span class="number">{{ nb_contrats_actifs }}</span>
+            <span class="label">Contrats actifs</span>
+        </div>
+        <div class="card card-teal">
+            <i class="fa-solid fa-check-circle card-icon"></i>
+            <span class="number">{{ nb_biens_disponibles }}</span>
+            <span class="label">Biens disponibles</span>
+        </div>
+    </div>
+
+    <!-- Accès rapide -->
+    <div class="section-card">
+        <div class="section-title">
+            <i class="fa-solid fa-bolt"></i> Accès rapide
+        </div>
+        <div class="quick-links">
+            <a href="{% url 'biens_liste' %}" class="quick-link ql-blue">
+                <i class="fa-solid fa-list"></i> Liste des biens
+            </a>
+            <a href="{% url 'biens_ajouter' %}" class="quick-link ql-green">
+                <i class="fa-solid fa-plus"></i> Ajouter un bien
+            </a>
+            <a href="{% url 'proprietaires_liste' %}" class="quick-link ql-purple">
+                <i class="fa-solid fa-users"></i> Propriétaires
+            </a>
+            <a href="{% url 'contrats_liste' %}" class="quick-link ql-yellow">
+                <i class="fa-solid fa-file-contract"></i> Contrats
+            </a>
+        </div>
+    </div>
+
+    <div class="refresh-info">
+        <i class="fa-solid fa-rotate"></i> Page actualisée automatiquement toutes les 30 secondes
+    </div>
+
 </div>
 
-<!-- Compteurs -->
-<div class="cards-grid">
-    <div class="card card-blue">
-        <span class="number">{{ nb_biens }}</span>
-        <span class="label">🏢 Biens immobiliers</span>
-    </div>
-    <div class="card card-green">
-        <span class="number">{{ nb_proprietaires }}</span>
-        <span class="label">👤 Propriétaires</span>
-    </div>
-    <div class="card card-orange">
-        <span class="number">{{ nb_contrats_actifs }}</span>
-        <span class="label">📄 Contrats actifs</span>
-    </div>
-    <div class="card card-teal">
-        <span class="number">{{ nb_biens_disponibles }}</span>
-        <span class="label">✅ Biens disponibles</span>
-    </div>
-</div>
-
-<!-- Liens rapides -->
-<div class="section-title">Accès rapide</div>
-<div class="quick-links">
-    <a href="{% url 'biens_liste' %}" class="quick-link ql-blue">📋 Liste des biens</a>
-    <a href="{% url 'biens_ajouter' %}" class="quick-link ql-green">➕ Ajouter un bien</a>
-    <a href="{% url 'proprietaires_liste' %}" class="quick-link ql-purple">👤 Propriétaires</a>
-    <a href="{% url 'contrats_liste' %}" class="quick-link ql-yellow">📄 Contrats</a>
-</div>
-
-{% endblock %}
 <script>
-    // Rafraîchissement automatique toutes les 30 secondes
-    setTimeout(function() {
-        location.reload();
-    }, 30000);
+    setTimeout(function() { location.reload(); }, 30000);
 </script>
+{% endblock %}

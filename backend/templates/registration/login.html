@@ -3,62 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion — Gestion Immobilière</title>
+    <title>Immovix — Connexion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+            font-family: 'Arial', sans-serif;
+            background: #0f172a;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(59,130,246,0.15), transparent);
+            top: -100px;
+            left: -100px;
+            border-radius: 50%;
+        }
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(16,185,129,0.1), transparent);
+            bottom: -100px;
+            right: -100px;
+            border-radius: 50%;
         }
 
         .login-wrapper {
             display: flex;
-            width: 820px;
-            border-radius: 16px;
+            width: 900px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+            z-index: 1;
         }
 
         /* Panneau gauche */
         .login-left {
             flex: 1;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            padding: 3rem 2rem;
+            background: linear-gradient(160deg, #1e40af 0%, #3b82f6 50%, #0ea5e9 100%);
+            padding: 3rem 2.5rem;
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        .login-left::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -80px;
+            right: -80px;
+        }
+        .login-left::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            bottom: -50px;
+            left: -50px;
+        }
+        .brand { position: relative; z-index: 1; }
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            color: white;
-        }
-        .login-left .logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .login-left h2 {
             font-size: 1.6rem;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1.2rem;
+            backdrop-filter: blur(10px);
         }
-        .login-left p {
-            font-size: 0.9rem;
-            opacity: 0.85;
+        .brand h2 {
+            font-size: 1.7rem;
+            color: white;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .brand h2 span { color: #93c5fd; }
+        .brand p {
+            color: rgba(255,255,255,0.75);
+            font-size: 0.88rem;
             line-height: 1.6;
         }
         .features {
-            margin-top: 2rem;
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0.9rem;
         }
         .feature-item {
             display: flex;
             align-items: center;
-            gap: 0.6rem;
+            gap: 0.8rem;
+            color: rgba(255,255,255,0.9);
             font-size: 0.88rem;
-            opacity: 0.9;
+        }
+        .feature-item .feat-icon {
+            width: 34px;
+            height: 34px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .login-left-footer {
+            position: relative;
+            z-index: 1;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.75rem;
         }
 
         /* Panneau droit */
@@ -71,16 +147,16 @@
             justify-content: center;
         }
         .login-right h1 {
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             color: #1f2937;
             margin-bottom: 0.4rem;
+            font-weight: 700;
         }
         .login-right .subtitle {
             color: #6b7280;
             font-size: 0.88rem;
             margin-bottom: 2rem;
         }
-
         .error {
             background: #fef2f2;
             border: 1px solid #fecaca;
@@ -89,47 +165,91 @@
             border-radius: 8px;
             font-size: 0.88rem;
             margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-
-        /* Champs du formulaire */
-        form p {
-            margin-bottom: 1.2rem;
-        }
+        form p { margin-bottom: 1.2rem; }
         form p label {
             display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.82rem;
+            font-weight: 700;
             color: #374151;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         form p input {
             width: 100%;
-            padding: 0.65rem 1rem;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 0.95rem;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            background: #f9fafb;
         }
         form p input:focus {
             border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.1);
         }
+
+        /* Oeil password */
+        .password-wrapper {
+            position: relative;
+        }
+        .password-wrapper input {
+            padding-right: 3rem !important;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .toggle-password:hover { color: #3b82f6; }
 
         .btn-login {
             width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            padding: 0.85rem;
+            background: linear-gradient(135deg, #1d4ed8, #3b82f6);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             margin-top: 0.5rem;
-            transition: opacity 0.2s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.4);
         }
-        .btn-login:hover { opacity: 0.9; }
+        .btn-login:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59,130,246,0.5);
+        }
+        .divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 1.5rem 0;
+        }
+        .security-note {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #9ca3af;
+            font-size: 0.78rem;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -137,33 +257,87 @@
 
         <!-- Panneau gauche -->
         <div class="login-left">
-            <div class="logo">🏠</div>
-            <h2>Gestion Immobilière</h2>
-            <p>Plateforme de gestion de vos biens, propriétaires et contrats de location.</p>
+            <div class="brand">
+                <div class="brand-logo"><i class="fa-solid fa-building-columns"></i></div>
+                <h2>Immo<span>vix</span></h2>
+                <p>Plateforme professionnelle de gestion de vos biens, propriétaires et contrats de location.</p>
+            </div>
             <div class="features">
-                <div class="feature-item">🏢 Gérez vos biens immobiliers</div>
-                <div class="feature-item">👤 Suivez vos propriétaires</div>
-                <div class="feature-item">📄 Gérez vos contrats</div>
-                <div class="feature-item">📊 Tableau de bord en temps réel</div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fa-solid fa-building"></i></div>
+                    <span>Gérez vos biens immobiliers</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fa-solid fa-users"></i></div>
+                    <span>Suivez vos propriétaires</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fa-solid fa-file-contract"></i></div>
+                    <span>Gérez vos contrats</span>
+                </div>
+                <div class="feature-item">
+                    <div class="feat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    <span>Tableau de bord en temps réel</span>
+                </div>
+            </div>
+            <div class="login-left-footer">
+                © 2026 Immovix. Tous droits réservés.
             </div>
         </div>
 
         <!-- Panneau droit -->
         <div class="login-right">
             <h1>Connexion</h1>
-            <p class="subtitle">Connectez-vous pour accéder à votre espace.</p>
+            <p class="subtitle">Accédez à votre espace Immovix.</p>
 
             {% if form.errors %}
-                <div class="error">⚠️ Identifiants invalides. Veuillez réessayer.</div>
+                <div class="error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Identifiants invalides. Veuillez réessayer.
+                </div>
             {% endif %}
 
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn-login">Se connecter →</button>
+                <button type="submit" class="btn-login">
+                    <i class="fa-solid fa-right-to-bracket"></i> Se connecter
+                </button>
             </form>
+
+            <div class="divider"></div>
+            <div class="security-note">
+                <i class="fa-solid fa-shield-halved"></i>
+                Connexion sécurisée — Vos données sont protégées
+            </div>
         </div>
 
     </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('id_password');
+            if (!passwordInput) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'password-wrapper';
+            passwordInput.parentNode.insertBefore(wrapper, passwordInput);
+            wrapper.appendChild(passwordInput);
+
+            const eye = document.createElement('span');
+            eye.className = 'toggle-password';
+            eye.innerHTML = '<i class="fa-solid fa-eye"></i>';
+            wrapper.appendChild(eye);
+
+            let visible = false;
+            eye.addEventListener('click', function() {
+                visible = !visible;
+                passwordInput.type = visible ? 'text' : 'password';
+                eye.innerHTML = visible
+                    ? '<i class="fa-solid fa-eye-slash"></i>'
+                    : '<i class="fa-solid fa-eye"></i>';
+            });
+        });
+    </script>
 </body>
 </html>
