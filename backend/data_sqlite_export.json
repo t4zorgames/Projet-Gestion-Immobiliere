@@ -1,0 +1,172 @@
+[
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$TKVjI1FzoHC4kAYYbPv1CE$HIooCR0vO6ki6xB6YFWPW3nffKSSfSS72IOg5oVGCAQ=",
+    "last_login": "2026-02-19T20:10:59.207Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-02-19T16:06:13.760Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qldr04i5qng58xkq1641h65mxqhcates",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQRO_iGllZx1nHlPQ5Q7T2rnEA2VI-FeLuJFIKKGfem3mrkbY1j9si8zixuipQl98uUHxKOQA_qNyrjrWs8xT0oeiTLnqoLK_b6f4dZFryvpaewLhEDXsILQMiWqCEkJDR7cHZpu0aYmLfQwITJJA3Qh1KDGzV5wvcPzgm:1vtAMV:dAB8yt5INC3_idd6hBmRwGK3hFfr6SLiZybW1V1GXnQ",
+    "expire_date": "2026-03-05T20:10:59.212Z"
+  }
+},
+{
+  "model": "immobilier.proprietaire",
+  "pk": 1,
+  "fields": {
+    "nom_complet": "Franck Romain Kamdem Woyim",
+    "email": "fakou909@gmail.com",
+    "telephone": "651396771"
+  }
+},
+{
+  "model": "immobilier.bienimmobilier",
+  "pk": 1,
+  "fields": {
+    "titre": "Appartement meublé",
+    "adresse": "Chapelle Nsimeyon, Rue Denver",
+    "ville": "yaounde",
+    "superficie_m2": 50,
+    "loyer_mensuel": "30000.00",
+    "type_bien": "appartement",
+    "proprietaire": 1,
+    "disponible": false,
+    "cree_le": "2026-02-19T17:15:57.966Z"
+  }
+},
+{
+  "model": "immobilier.bienimmobilier",
+  "pk": 2,
+  "fields": {
+    "titre": "Chambre moderne 2 pieces",
+    "adresse": "Chapelle Nsimeyon, Rue Denver",
+    "ville": "yaounde",
+    "superficie_m2": 70,
+    "loyer_mensuel": "70000.00",
+    "type_bien": "appartement",
+    "proprietaire": 1,
+    "disponible": false,
+    "cree_le": "2026-02-21T08:14:55.046Z"
+  }
+},
+{
+  "model": "immobilier.bienimmobilier",
+  "pk": 3,
+  "fields": {
+    "titre": "Chambre étudiant avec douche interne",
+    "adresse": "Bonas",
+    "ville": "yaounde",
+    "superficie_m2": 30,
+    "loyer_mensuel": "25000.00",
+    "type_bien": "appartement",
+    "proprietaire": 1,
+    "disponible": true,
+    "cree_le": "2026-02-21T08:22:01.448Z"
+  }
+},
+{
+  "model": "immobilier.bienimmobilier",
+  "pk": 4,
+  "fields": {
+    "titre": "Chambre moderne 2 pieces",
+    "adresse": "Chapelle Nsimeyon, Rue Denver",
+    "ville": "douala",
+    "superficie_m2": 100,
+    "loyer_mensuel": "120000.00",
+    "type_bien": "appartement",
+    "proprietaire": 1,
+    "disponible": true,
+    "cree_le": "2026-02-21T08:47:49.327Z"
+  }
+},
+{
+  "model": "immobilier.bienimmobilier",
+  "pk": 5,
+  "fields": {
+    "titre": "Appartement meublé",
+    "adresse": "Daido",
+    "ville": "douala",
+    "superficie_m2": 100,
+    "loyer_mensuel": "100000.00",
+    "type_bien": "appartement",
+    "proprietaire": 1,
+    "disponible": true,
+    "cree_le": "2026-02-21T08:50:28.311Z"
+  }
+},
+{
+  "model": "immobilier.bienimage",
+  "pk": 1,
+  "fields": {
+    "bien": 4,
+    "image": "biens/chambreModerne.jfif",
+    "cree_le": "2026-02-21T08:47:49.336Z"
+  }
+},
+{
+  "model": "immobilier.bienimage",
+  "pk": 2,
+  "fields": {
+    "bien": 5,
+    "image": "biens/chambre-moderne-gris-blanc-la-maison-saint-gobain.webp",
+    "cree_le": "2026-02-21T08:50:28.318Z"
+  }
+},
+{
+  "model": "immobilier.bienimage",
+  "pk": 4,
+  "fields": {
+    "bien": 3,
+    "image": "biens/cham.jpg",
+    "cree_le": "2026-02-21T08:55:07.854Z"
+  }
+},
+{
+  "model": "immobilier.bienimage",
+  "pk": 5,
+  "fields": {
+    "bien": 5,
+    "image": "biens/design-bedroom-modern-style.webp",
+    "cree_le": "2026-02-21T08:56:28.525Z"
+  }
+},
+{
+  "model": "immobilier.contratlocation",
+  "pk": 1,
+  "fields": {
+    "bien": 1,
+    "locataire_nom": "Paffman",
+    "date_debut": "2026-02-19",
+    "date_fin": "2026-03-19",
+    "caution": "2000.00",
+    "actif": true
+  }
+},
+{
+  "model": "immobilier.contratlocation",
+  "pk": 2,
+  "fields": {
+    "bien": 2,
+    "locataire_nom": "Justine Djomo",
+    "date_debut": "2026-02-06",
+    "date_fin": "2026-10-21",
+    "caution": "5000.00",
+    "actif": true
+  }
+}
+]
