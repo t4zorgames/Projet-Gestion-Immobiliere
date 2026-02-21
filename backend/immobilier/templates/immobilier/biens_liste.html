@@ -4,32 +4,60 @@
 
 {% block content %}
 <style>
+    .page-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(160deg, #eef4ff 0%, #f8fafc 100%);
+        margin: -1.5rem;
+        padding: 2rem;
+        border-radius: 8px;
+    }
+
+    .page-container {
+        max-width: 1320px;
+        margin: 0 auto;
+    }
+
     .page-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        border-radius: 16px;
+        padding: 1.2rem 1.4rem;
+        box-shadow: 0 12px 28px rgba(59, 130, 246, 0.28);
     }
     .page-header h1 {
-        font-size: 1.6rem;
-        color: #1f2937;
+        font-size: 1.25rem;
+        color: #ffffff;
         margin: 0;
     }
+    .page-subtitle {
+        margin: 0.25rem 0 0;
+        color: rgba(255,255,255,0.85);
+        font-size: 0.85rem;
+    }
     .btn-ajouter {
-        background: linear-gradient(135deg, #10b981, #047857);
+        background: rgba(255,255,255,0.16);
         color: white;
         padding: 0.6rem 1.2rem;
         border-radius: 8px;
         text-decoration: none;
         font-size: 0.9rem;
-        font-weight: 500;
+        font-weight: 600;
+        border: 1px solid rgba(255,255,255,0.42);
     }
-    .btn-ajouter:hover { opacity: 0.85; }
+    .btn-ajouter:hover { background: rgba(255,255,255,0.24); }
 
     .search-bar {
         display: flex;
         gap: 0.5rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 0.75rem;
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e5e7eb;
     }
     .search-bar input {
         flex: 1;
@@ -42,14 +70,15 @@
     .search-bar input:focus { border-color: #3b82f6; }
     .search-bar button {
         padding: 0.6rem 1.2rem;
-        background: #3b82f6;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
         color: white;
         border: none;
         border-radius: 8px;
         cursor: pointer;
         font-size: 0.9rem;
+        font-weight: 600;
     }
-    .search-bar button:hover { background: #1d4ed8; }
+    .search-bar button:hover { opacity: 0.92; }
     .search-bar a {
         padding: 0.6rem 1rem;
         color: #6b7280;
@@ -57,13 +86,24 @@
         font-size: 0.9rem;
         border: 1px solid #d1d5db;
         border-radius: 8px;
+        background: #f9fafb;
     }
     .search-bar a:hover { background: #f3f4f6; }
+
+    .table-card {
+        background: #ffffff;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+        border: 1px solid #e5e7eb;
+        overflow-x: auto;
+    }
 
     table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.9rem;
+        min-width: 1160px;
     }
     thead {
         background: #1f2937;
@@ -73,15 +113,20 @@
         padding: 0.8rem 1rem;
         text-align: left;
         font-weight: 500;
+        letter-spacing: 0.02em;
     }
     tbody tr {
         border-bottom: 1px solid #e5e7eb;
-        transition: background 0.15s;
+        transition: background 0.15s, transform 0.12s;
     }
-    tbody tr:hover { background: #f9fafb; }
+    tbody tr:hover {
+        background: #f9fafb;
+    }
     tbody td {
         padding: 0.8rem 1rem;
         color: #374151;
+        vertical-align: middle;
+        white-space: nowrap;
     }
     .badge {
         padding: 0.25rem 0.7rem;
@@ -98,6 +143,8 @@
         text-decoration: none;
         font-size: 0.82rem;
         font-weight: 500;
+        display: inline-flex;
+        align-items: center;
     }
     .btn-modifier { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
     .btn-supprimer { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
@@ -116,56 +163,87 @@
         font-weight: 500;
     }
     .titre-link:hover { text-decoration: underline; }
+
+    .apercu-thumb {
+        width: 72px;
+        height: 54px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        display: block;
+    }
+
+    .no-image {
+        color: #9ca3af;
+        font-size: 0.82rem;
+    }
 </style>
 
-<div class="page-header">
-    <h1>🏢 Liste des biens</h1>
-    <a href="{% url 'biens_ajouter' %}" class="btn-ajouter">➕ Ajouter un bien</a>
+<div class="page-wrapper">
+    <div class="page-container">
+        <div class="page-header">
+            <div>
+                <h1>Liste des biens</h1>
+                <p class="page-subtitle">Aperçu rapide des biens, disponibilités et actions</p>
+            </div>
+            <a href="{% url 'biens_ajouter' %}" class="btn-ajouter">➕ Ajouter un bien</a>
+        </div>
+
+        <form method="get" class="search-bar">
+            <input type="text" name="q" value="{{ q }}" placeholder="🔍 Rechercher par titre ou ville...">
+            <button type="submit">Rechercher</button>
+            <a href="{% url 'biens_liste' %}">Réinitialiser</a>
+        </form>
+
+        <div class="table-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aperçu</th>
+                        <th>Titre</th>
+                        <th>Ville</th>
+                        <th>Type</th>
+                        <th>Loyer (FCFA)</th>
+                        <th>Propriétaire</th>
+                        <th>Disponible</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bien in biens %}
+                    <tr>
+                        <td>
+                            {% if bien.image_apercu %}
+                                <img src="{{ bien.image_apercu.image.url }}" alt="Aperçu {{ bien.titre }}" class="apercu-thumb">
+                            {% else %}
+                                <span class="no-image">Aucune</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="{% url 'biens_detail' bien.pk %}" class="titre-link">{{ bien.titre }}</a></td>
+                        <td>{{ bien.ville }}</td>
+                        <td>{{ bien.get_type_bien_display }}</td>
+                        <td>{{ bien.loyer_mensuel }}</td>
+                        <td>{{ bien.proprietaire.nom_complet }}</td>
+                        <td>
+                            {% if bien.disponible %}
+                                <span class="badge badge-oui">✅ Oui</span>
+                            {% else %}
+                                <span class="badge badge-non">❌ Non</span>
+                            {% endif %}
+                        </td>
+                        <td class="actions" style="display:flex; gap:0.4rem;">
+                            <a href="{% url 'biens_modifier' bien.pk %}" class="btn-modifier">✏️ Modifier</a>
+                            <a href="{% url 'biens_supprimer' bien.pk %}" class="btn-supprimer">🗑️ Supprimer</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class="empty-row">
+                        <td colspan="8">Aucun bien trouvé.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-<form method="get" class="search-bar">
-    <input type="text" name="q" value="{{ q }}" placeholder="🔍 Rechercher par titre ou ville...">
-    <button type="submit">Rechercher</button>
-    <a href="{% url 'biens_liste' %}">Réinitialiser</a>
-</form>
-
-<table>
-    <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Ville</th>
-            <th>Type</th>
-            <th>Loyer (FCFA)</th>
-            <th>Propriétaire</th>
-            <th>Disponible</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for bien in biens %}
-        <tr>
-            <td><a href="{% url 'biens_detail' bien.pk %}" class="titre-link">{{ bien.titre }}</a></td>
-            <td>{{ bien.ville }}</td>
-            <td>{{ bien.get_type_bien_display }}</td>
-            <td>{{ bien.loyer_mensuel }}</td>
-            <td>{{ bien.proprietaire.nom_complet }}</td>
-            <td>
-                {% if bien.disponible %}
-                    <span class="badge badge-oui">✅ Oui</span>
-                {% else %}
-                    <span class="badge badge-non">❌ Non</span>
-                {% endif %}
-            </td>
-            <td class="actions" style="display:flex; gap:0.4rem;">
-                <a href="{% url 'biens_modifier' bien.pk %}" class="btn-modifier">✏️ Modifier</a>
-                <a href="{% url 'biens_supprimer' bien.pk %}" class="btn-supprimer">🗑️ Supprimer</a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr class="empty-row">
-            <td colspan="7">Aucun bien trouvé.</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 {% endblock %}

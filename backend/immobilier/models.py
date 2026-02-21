@@ -82,6 +82,18 @@ class BienImmobilier(models.Model):
 		return self.titre
 
 
+class BienImage(models.Model):
+	bien = models.ForeignKey(BienImmobilier, on_delete=models.CASCADE, related_name="images")
+	image = models.ImageField(upload_to="biens/")
+	cree_le = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		ordering = ["-cree_le"]
+
+	def __str__(self):
+		return f"Image - {self.bien.titre}"
+
+
 class ContratLocation(models.Model):
 	bien = models.ForeignKey(BienImmobilier, on_delete=models.CASCADE, related_name="contrats")
 	locataire_nom = models.CharField(max_length=120)

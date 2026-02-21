@@ -3,20 +3,205 @@
 {% block title %}Détail du bien - Gestion Immobilière{% endblock %}
 
 {% block content %}
-<h1>Détail du bien</h1>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    .page-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #f0f4ff 0%, #fafafa 100%);
+        margin: -1.5rem;
+        padding: 2rem;
+        border-radius: 8px;
+    }
 
-<p><strong>Titre :</strong> {{ bien.titre }}</p>
-<p><strong>Adresse :</strong> {{ bien.adresse }}</p>
-<p><strong>Ville :</strong> {{ bien.ville }}</p>
-<p><strong>Superficie (m²) :</strong> {{ bien.superficie_m2 }}</p>
-<p><strong>Loyer mensuel :</strong> {{ bien.loyer_mensuel }}</p>
-<p><strong>Type :</strong> {{ bien.get_type_bien_display }}</p>
-<p><strong>Propriétaire :</strong> {{ bien.proprietaire.nom_complet }}</p>
-<p><strong>Disponible :</strong> {% if bien.disponible %}Oui{% else %}Non{% endif %}</p>
+    .detail-container {
+        max-width: 980px;
+        margin: 0 auto;
+    }
 
-<p>
-    <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
-    <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a> |
-    <a href="{% url 'biens_liste' %}">Retour à la liste</a>
-</p>
+    .detail-header {
+        background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+        border-radius: 14px;
+        padding: 1.8rem 2rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+    }
+
+    .detail-header .icon {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        width: 52px;
+        height: 52px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .detail-header-text h1 {
+        font-size: 1.6rem;
+        color: white;
+        margin: 0 0 0.2rem 0;
+    }
+
+    .detail-header-text p {
+        color: rgba(255,255,255,0.8);
+        font-size: 0.85rem;
+        margin: 0;
+    }
+
+    .detail-layout {
+        display: grid;
+        grid-template-columns: 1.3fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .detail-card {
+        background: white;
+        border-radius: 14px;
+        padding: 1.4rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+
+    .detail-card p {
+        margin: 0.45rem 0;
+    }
+
+    .image-main {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        object-fit: cover;
+        max-height: 280px;
+    }
+
+    .thumbs {
+        margin-top: 0.8rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .thumb-btn {
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
+    }
+
+    .thumb-btn.active {
+        border-color: #2563eb;
+    }
+
+    .thumbs img {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+    }
+
+    .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        margin-top: 1.2rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .btn-action {
+        background: #f3f4f6;
+        color: #374151;
+        padding: 0.55rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 12px rgba(59,130,246,0.25);
+    }
+</style>
+
+<div class="page-wrapper">
+    <div class="detail-container">
+        <div class="detail-header">
+            <div class="icon"><i class="fa-solid fa-house"></i></div>
+            <div class="detail-header-text">
+                <h1>Détail du bien</h1>
+                <p>Consultez les informations et l’aperçu visuel du bien immobilier</p>
+            </div>
+        </div>
+
+        <div class="detail-layout">
+            <div class="detail-card">
+                <p><strong>Titre :</strong> {{ bien.titre }}</p>
+                <p><strong>Adresse :</strong> {{ bien.adresse }}</p>
+                <p><strong>Ville :</strong> {{ bien.get_ville_display }}</p>
+                <p><strong>Superficie (m²) :</strong> {{ bien.superficie_m2 }}</p>
+                <p><strong>Loyer mensuel :</strong> {{ bien.loyer_mensuel }}</p>
+                <p><strong>Type :</strong> {{ bien.get_type_bien_display }}</p>
+                <p><strong>Propriétaire :</strong> {{ bien.proprietaire.nom_complet }}</p>
+                <p><strong>Disponible :</strong> {% if bien.disponible %}Oui{% else %}Non{% endif %}</p>
+
+                <div class="action-row">
+                    <a href="{% url 'biens_modifier' bien.pk %}" class="btn-action btn-primary"><i class="fa-solid fa-pen"></i> Modifier</a>
+                    <a href="{% url 'biens_supprimer' bien.pk %}" class="btn-action"><i class="fa-solid fa-trash"></i> Supprimer</a>
+                    <a href="{% url 'biens_liste' %}" class="btn-action"><i class="fa-solid fa-arrow-left"></i> Retour à la liste</a>
+                </div>
+            </div>
+
+            <div class="detail-card">
+                <h3>Aperçu du bien</h3>
+                {% if image_principale %}
+                    <img id="image-main-preview" src="{{ image_principale.image.url }}" alt="Image principale du bien" class="image-main">
+                    {% if images|length > 1 %}
+                        <div class="thumbs">
+                            {% for img in images %}
+                                <button type="button" class="thumb-btn {% if forloop.first %}active{% endif %}" data-image-url="{{ img.image.url }}" aria-label="Afficher l'image {{ forloop.counter }}">
+                                    <img src="{{ img.image.url }}" alt="Image du bien {{ forloop.counter }}">
+                                </button>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <p>Aucune image disponible pour ce bien.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const mainImage = document.getElementById('image-main-preview');
+        const thumbButtons = document.querySelectorAll('.thumb-btn');
+
+        if (!mainImage || thumbButtons.length === 0) return;
+
+        thumbButtons.forEach((button) => {
+            button.addEventListener('click', function () {
+                const nextUrl = button.getAttribute('data-image-url');
+                if (!nextUrl) return;
+
+                mainImage.src = nextUrl;
+                thumbButtons.forEach((b) => b.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+    })();
+</script>
 {% endblock %}

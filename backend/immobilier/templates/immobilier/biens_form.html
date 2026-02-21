@@ -119,6 +119,69 @@
         transition: background 0.2s;
     }
     .btn-cancel:hover { background: #e5e7eb; }
+
+    .preview-wrapper {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.7rem;
+        margin-top: 0.6rem;
+    }
+
+    .preview-grid img {
+        width: 100%;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+    }
+
+    .preview-empty {
+        font-size: 0.85rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .existing-images-wrapper {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .existing-images-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.8rem;
+        margin-top: 0.6rem;
+    }
+
+    .existing-image-item {
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 0.45rem;
+        background: #fafafa;
+    }
+
+    .existing-image-item img {
+        width: 100%;
+        height: 95px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 0.35rem;
+    }
+
+    .existing-image-item label {
+        font-size: 0.8rem;
+        color: #4b5563;
+        display: flex;
+        gap: 0.35rem;
+        align-items: center;
+    }
 </style>
 
 <div class="page-wrapper">
@@ -133,11 +196,11 @@
         </div>
 
         <div class="form-card">
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="form-grid">
                     {% for field in form %}
-                        <div class="{% if field.name == 'adresse' or field.name == 'disponible' %}full-width{% endif %}">
+                        <div class="{% if field.name == 'adresse' or field.name == 'disponible' or field.name == 'images' %}full-width{% endif %}">
                             <p>{{ field.label_tag }} {{ field }}</p>
                         </div>
                     {% endfor %}
@@ -150,9 +213,72 @@
                         <i class="fa-solid fa-xmark"></i> Annuler
                     </a>
                 </div>
+
+                <div class="preview-wrapper">
+                    <strong>Aperçu des images sélectionnées</strong>
+                    <p id="preview-empty" class="preview-empty">Aucune image sélectionnée pour le moment.</p>
+                    <div id="images-preview" class="preview-grid"></div>
+                </div>
+
+                {% if existing_images %}
+                <div class="existing-images-wrapper">
+                    <strong>Images déjà enregistrées</strong>
+                    <p class="preview-empty">Cochez une image si vous voulez la supprimer lors de l'enregistrement.</p>
+                    <div class="existing-images-grid">
+                        {% for img in existing_images %}
+                        <div class="existing-image-item">
+                            <img src="{{ img.image.url }}" alt="Image existante {{ forloop.counter }}">
+                            <label>
+                                <input type="checkbox" name="images_a_supprimer" value="{{ img.id }}">
+                                Supprimer
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </form>
         </div>
 
     </div>
 </div>
+
+<script>
+    (function () {
+        const input = document.getElementById('id_images');
+        const previewGrid = document.getElementById('images-preview');
+        const emptyText = document.getElementById('preview-empty');
+
+        if (!input || !previewGrid || !emptyText) return;
+
+        function refreshPreview(files) {
+            previewGrid.innerHTML = '';
+
+            if (!files || files.length === 0) {
+                emptyText.style.display = 'block';
+                return;
+            }
+
+            emptyText.style.display = 'none';
+
+            Array.from(files).forEach((file) => {
+                if (!file.type.startsWith('image/')) return;
+
+                const image = document.createElement('img');
+                image.alt = file.name;
+                image.src = URL.createObjectURL(file);
+
+                image.onload = function () {
+                    URL.revokeObjectURL(image.src);
+                };
+
+                previewGrid.appendChild(image);
+            });
+        }
+
+        input.addEventListener('change', function () {
+            refreshPreview(input.files);
+        });
+    })();
+</script>
 {% endblock %}

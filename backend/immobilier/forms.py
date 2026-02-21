@@ -3,7 +3,25 @@ from django.db.models import Q
 from .models import BienImmobilier, ContratLocation, Proprietaire
 
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            return [single_file_clean(item, initial) for item in data]
+        return single_file_clean(data, initial)
+
+
 class BienImmobilierForm(forms.ModelForm):
+    images = MultipleFileField(required=False, label="Images du bien")
+
     class Meta:
         model = BienImmobilier
         fields = [

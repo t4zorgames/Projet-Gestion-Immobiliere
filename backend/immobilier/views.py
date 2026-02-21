@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from .forms import BienImmobilierForm, ContratLocationForm, ProprietaireForm
-from .models import BienImmobilier, ContratLocation, Proprietaire
+from .models import BienImmobilier, BienImage, ContratLocation, Proprietaire
 
 
 @login_required
@@ -32,9 +32,15 @@ def page_placeholder(request, title, description, pk=None):
 @login_required
 def biens_liste(request):
     recherche = request.GET.get("q", "").strip()
-    biens = BienImmobilier.objects.select_related("proprietaire").order_by("-cree_le")
+    biens = BienImmobilier.objects.select_related("proprietaire").prefetch_related("images").order_by("-cree_le")
     if recherche:
         biens = biens.filter(Q(titre__icontains=recherche) | Q(ville__icontains=recherche))
+
+    biens = list(biens)
+    for bien in biens:
+        images = list(bien.images.all())
+        bien.image_apercu = images[0] if images else None
+
     context = {"title": "Liste des biens", "biens": biens, "q": recherche}
     return render(request, "immobilier/biens_liste.html", context)
 
@@ -42,13 +48,21 @@ def biens_liste(request):
 @login_required
 def biens_create(request):
     if request.method == "POST":
-        form = BienImmobilierForm(request.POST)
+        form = BienImmobilierForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            bien = form.save()
+
+            for image_file in request.FILES.getlist("images"):
+                BienImage.objects.create(bien=bien, image=image_file)
+
             return redirect("biens_liste")
     else:
         form = BienImmobilierForm()
-    context = {"title": "Ajouter un bien", "form": form}
+    context = {
+        "title": "Ajouter un bien",
+        "form": form,
+        "existing_images": [],
+    }
     return render(request, "immobilier/biens_form.html", context)
 
 
@@ -56,13 +70,26 @@ def biens_create(request):
 def biens_update(request, pk):
     bien = get_object_or_404(BienImmobilier, pk=pk)
     if request.method == "POST":
-        form = BienImmobilierForm(request.POST, instance=bien)
+        form = BienImmobilierForm(request.POST, request.FILES, instance=bien)
         if form.is_valid():
-            form.save()
+            bien = form.save()
+
+            images_a_supprimer = request.POST.getlist("images_a_supprimer")
+            if images_a_supprimer:
+                BienImage.objects.filter(bien=bien, id__in=images_a_supprimer).delete()
+
+            for image_file in request.FILES.getlist("images"):
+                BienImage.objects.create(bien=bien, image=image_file)
+
             return redirect("biens_liste")
     else:
         form = BienImmobilierForm(instance=bien)
-    context = {"title": "Modifier un bien", "form": form, "bien": bien}
+    context = {
+        "title": "Modifier un bien",
+        "form": form,
+        "bien": bien,
+        "existing_images": bien.images.all(),
+    }
     return render(request, "immobilier/biens_form.html", context)
 
 
@@ -79,7 +106,13 @@ def biens_delete(request, pk):
 @login_required
 def biens_detail(request, pk):
     bien = get_object_or_404(BienImmobilier.objects.select_related("proprietaire"), pk=pk)
-    context = {"title": "Détail d'un bien", "bien": bien}
+    images = bien.images.all()
+    context = {
+        "title": "Détail d'un bien",
+        "bien": bien,
+        "images": images,
+        "image_principale": images.first(),
+    }
     return render(request, "immobilier/biens_detail.html", context)
 
 
@@ -239,7 +272,7 @@ def contrat_pdf(request, pk):
     p.drawString(50, height - 370, "Signatures")
     p.setFont("Helvetica", 11)
     
-    p.drawString(50, height - 420, f"ropriétaire : {contrat.bien.proprietaire.nom_complet}")
+    p.drawString(50, height - 420, f" Propriétaire : {contrat.bien.proprietaire.nom_complet}")
 
     p.drawString(300, height - 420, f"Locataire : {contrat.locataire_nom}")
 

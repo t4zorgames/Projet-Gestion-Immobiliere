@@ -3,12 +3,66 @@
 {% block title %}Supprimer un contrat - Gestion Immobilière{% endblock %}
 
 {% block content %}
-<h1>Supprimer un contrat</h1>
-<p>Voulez-vous vraiment supprimer le contrat de <strong>{{ contrat.locataire_nom }}</strong> pour le bien <strong>{{ contrat.bien.titre }}</strong> ?</p>
+<style>
+    .delete-wrapper {
+        min-height: 80vh;
+        background: linear-gradient(135deg, #fff7ed 0%, #fafafa 100%);
+        margin: -1.5rem;
+        padding: 2rem;
+        border-radius: 8px;
+    }
+    .delete-card {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        border-top: 5px solid #f59e0b;
+        border-radius: 14px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .warning {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: #991b1b;
+        border-radius: 10px;
+        padding: 0.8rem 1rem;
+        margin: 1rem 0 1.4rem;
+    }
+    .actions {
+        display: flex;
+        gap: 0.7rem;
+    }
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.65rem 1rem;
+        cursor: pointer;
+    }
+    .btn-cancel {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        padding: 0.65rem 1rem;
+        text-decoration: none;
+    }
+</style>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirmer la suppression</button>
-    <a href="{% url 'contrats_liste' %}">Annuler</a>
-</form>
+<div class="delete-wrapper">
+    <div class="delete-card">
+        <h1>Supprimer un contrat</h1>
+        <p>Voulez-vous vraiment supprimer le contrat de <strong>{{ contrat.locataire_nom }}</strong> pour le bien <strong>{{ contrat.bien.titre }}</strong> ?</p>
+        <div class="warning">Cette action est irréversible.</div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="actions">
+                <button type="submit" class="btn-danger">Confirmer la suppression</button>
+                <a href="{% url 'contrats_liste' %}" class="btn-cancel">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
