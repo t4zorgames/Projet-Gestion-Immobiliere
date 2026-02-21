@@ -238,8 +238,10 @@ def contrat_pdf(request, pk):
     p.setFont("Helvetica-Bold", 12)
     p.drawString(50, height - 370, "Signatures")
     p.setFont("Helvetica", 11)
-    p.drawString(50, height - 400, "Propriétaire : _______________________")
-    p.drawString(300, height - 400, "Locataire : _______________________")
+    
+    p.drawString(50, height - 420, f"ropriétaire : {contrat.bien.proprietaire.nom_complet}")
+
+    p.drawString(300, height - 420, f"Locataire : {contrat.locataire_nom}")
 
     p.showPage()
     p.save()
