@@ -1,0 +1,15 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-biens{% endblock %}
+
+{% block title %}Supprimer un bien - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Supprimer un bien</h1>
+<p>Voulez-vous vraiment supprimer le bien <strong>{{ bien.titre }}</strong> ?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn">Confirmer la suppression</button>
+    <a href="{% url 'biens_liste' %}">Annuler</a>
+</form>
+{% endblock %}

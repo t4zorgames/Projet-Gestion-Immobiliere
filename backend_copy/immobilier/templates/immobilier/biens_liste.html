@@ -1,0 +1,65 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-biens{% endblock %}
+
+{% block title %}Liste des biens - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Liste des biens</h1>
+
+<form method="get" style="margin-bottom: 1rem;">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher par titre ou ville">
+    <button type="submit">Rechercher</button>
+    <a href="{% url 'biens_liste' %}">Réinitialiser</a>
+</form>
+
+{% if user_is_proprietaire or request.user.is_staff %}
+    <p><a href="{% url 'biens_ajouter' %}">+ Ajouter un bien</a></p>
+{% endif %}
+
+<table border="1" cellpadding="8" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Ville</th>
+            <th>Type</th>
+            <th>Loyer</th>
+            <th>Propriétaire</th>
+            <th>Disponible</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bien in biens %}
+            <tr>
+                <td><a href="{% url 'biens_detail' bien.pk %}">{{ bien.titre }}</a></td>
+                <td>{{ bien.ville }}</td>
+                <td>{{ bien.get_type_bien_display }}</td>
+                <td>{{ bien.loyer_mensuel }}</td>
+                <td>{{ bien.proprietaire.nom_complet }}</td>
+                <td>{% if bien.disponible %}Oui{% else %}Non{% endif %}</td>
+                <td>
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.is_staff %}
+                            <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
+                            <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a>
+                        {% else %}
+                            {% if bien.proprietaire and bien.proprietaire.user and bien.proprietaire.user.id == request.user.id %}
+                                <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
+                                <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a>
+                            {% else %}
+                                —
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        —
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="7">Aucun bien trouvé.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

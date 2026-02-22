@@ -1,0 +1,12 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-home{% endblock %}
+
+{% block title %}{{ title }} - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<p>{{ description }}</p>
+{% if pk %}
+<p><strong>Identifiant de démonstration :</strong> {{ pk }}</p>
+{% endif %}
+{% endblock %}

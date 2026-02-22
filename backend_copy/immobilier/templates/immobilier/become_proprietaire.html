@@ -1,0 +1,12 @@
+{% extends "immobilier/base.html" %}
+
+{% block title %}Devenir propriétaire{% endblock %}
+
+{% block content %}
+  <h1>Devenir propriétaire</h1>
+  <p>Pour ajouter des biens, vous devez être enregistré comme propriétaire. Cliquez pour confirmer la création de votre profil propriétaire.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn" type="submit">Créer mon profil de propriétaire</button>
+  </form>
+{% endblock %}

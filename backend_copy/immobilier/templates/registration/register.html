@@ -1,0 +1,60 @@
+{% extends "immobilier/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    <h1>Inscription</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <ul class="form-errors">
+          {% for err in form.non_field_errors %}
+            <li>{{ err }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <div>
+        {{ form.username.label_tag }} {{ form.username }}
+        {% if form.username.errors %}
+          <div class="field-errors">{{ form.username.errors }}</div>
+        {% endif %}
+      </div>
+      <div>
+        {{ form.email.label_tag }} {{ form.email }}
+        {% if form.email.errors %}
+          <div class="field-errors">{{ form.email.errors }}</div>
+        {% endif %}
+      </div>
+      <div>
+        {{ form.first_name.label_tag }} {{ form.first_name }}
+        {% if form.first_name.errors %}
+          <div class="field-errors">{{ form.first_name.errors }}</div>
+        {% endif %}
+      </div>
+      <div>
+        {{ form.last_name.label_tag }} {{ form.last_name }}
+        {% if form.last_name.errors %}
+          <div class="field-errors">{{ form.last_name.errors }}</div>
+        {% endif %}
+      </div>
+      <div>
+        {{ form.password1.label_tag }} {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div class="field-errors">{{ form.password1.errors }}</div>
+        {% endif %}
+      </div>
+      <div>
+        {{ form.password2.label_tag }} {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div class="field-errors">{{ form.password2.errors }}</div>
+        {% endif %}
+      </div>
+      <div>
+        {{ form.is_proprietaire }} {{ form.is_proprietaire.label_tag }}
+      </div>
+      <button type="submit" class="btn btn-primary">S'inscrire</button>
+    </form>
+
+    <p>Vous avez déjà un compte ? <a href="{% url 'connexion' %}">Connexion</a></p>
+  </div>
+{% endblock %}

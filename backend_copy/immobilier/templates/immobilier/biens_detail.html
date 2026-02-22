@@ -1,0 +1,110 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-biens{% endblock %}
+
+{% block title %}Détail du bien - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>Détail du bien</h1>
+
+<p><strong>Titre :</strong> {{ bien.titre }}</p>
+<p><strong>Adresse :</strong> {{ bien.adresse }}</p>
+<p><strong>Ville :</strong> {{ bien.ville }}</p>
+<p><strong>Superficie (m²) :</strong> {{ bien.superficie_m2 }}</p>
+<p><strong>Loyer mensuel :</strong> {{ bien.loyer_mensuel }}</p>
+<p><strong>Type :</strong> {{ bien.get_type_bien_display }}</p>
+<p><strong>Propriétaire :</strong> {{ bien.proprietaire.nom_complet }}</p>
+<p><strong>Email :</strong> {{ bien.proprietaire.email }}</p>
+<p><strong>Téléphone :</strong> {{ bien.proprietaire.telephone }}</p>
+<p><strong>Disponible :</strong> {% if bien.disponible %}Oui{% else %}Non{% endif %}</p>
+
+<p>
+    {% if request.user.is_authenticated %}
+        {% if request.user.is_staff %}
+            <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
+            <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a> |
+        {% else %}
+            {% if bien.proprietaire and bien.proprietaire.user and bien.proprietaire.user.id == request.user.id %}
+                <a href="{% url 'biens_modifier' bien.pk %}">Modifier</a> |
+                <a href="{% url 'biens_supprimer' bien.pk %}">Supprimer</a> |
+            {% endif %}
+        {% endif %}
+    {% endif %}
+    <a href="{% url 'biens_liste' %}">Retour à la liste</a>
+</p>
+
+{% if bien.exige_validation_contrat %}
+    <hr>
+    <h2>Contrat pré-rempli</h2>
+    <p>Le propriétaire exige que le contrat soit accepté avant de louer ce bien. Cliquez pour lire et compléter vos informations.</p>
+    <p>
+        {% if user.is_authenticated %}
+            <button id="open-contrat-{{ bien.pk }}" class="btn">Lire et accepter le contrat / Demander la location</button>
+        {% else %}
+            <a class="btn" href="{% url 'connexion' %}?next={% url 'biens_detail' bien.pk %}">Se connecter pour demander la location</a>
+        {% endif %}
+    </p>
+
+    {% if user.is_authenticated %}
+        <div id="contrat-modal-{{ bien.pk }}" class="contrat-modal" style="display:none; position:fixed; inset:0;background:rgba(0,0,0,0.6);z-index:50;">
+            <div class="contrat-modal-content" style="background:#fff;max-width:900px;margin:40px auto;padding:20px;position:relative;">
+                <button class="contrat-close" style="position:absolute;right:12px;top:12px;">&times;</button>
+                <h2>Contrat pré-rempli</h2>
+                <div style="max-height:400px;overflow:auto;margin-bottom:1rem;">
+                    <pre style="white-space:pre-wrap;">
+Contrat de location
+
+Bailleur : {{ bien.proprietaire.nom_complet }}
+Contact bailleur : {{ bien.proprietaire.email }} / {{ bien.proprietaire.telephone }}
+
+Bien : {{ bien.titre }} - {{ bien.adresse }}, {{ bien.ville }}
+Type : {{ bien.get_type_bien_display }}
+Superficie : {{ bien.superficie_m2 }} m²
+Loyer mensuel : {{ bien.loyer_mensuel }}
+
+Conditions : Le locataire devra fournir ses coordonnées et accepter ce contrat pour pouvoir finaliser la demande.
+                    </pre>
+                </div>
+
+                <form method="post" action="{% url 'contrats_ajouter' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="proprietaire" value="{{ bien.proprietaire.pk }}">
+                    <input type="hidden" name="bien" value="{{ bien.pk }}">
+                    <div style="margin-bottom:0.5rem;">
+                        <label>Nom complet (locataire)<br><input type="text" name="locataire_nom" required></label>
+                    </div>
+                    <div style="margin-bottom:0.5rem;">
+                        <label>Téléphone<br><input type="text" name="locataire_telephone" required></label>
+                    </div>
+                    <div style="margin-bottom:0.5rem;">
+                        <label>Email (optionnel)<br><input type="email" name="locataire_email"></label>
+                    </div>
+                    <div style="margin-bottom:0.5rem;">
+                        <label>Informations supplémentaires<br><textarea name="locataire_info"></textarea></label>
+                    </div>
+                    <div style="margin-bottom:1rem;">
+                        <label>
+                            <input type="checkbox" name="accepte_contrat" required>
+                            J'ai lu et j'accepte le contrat pré-rempli
+                        </label>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn">Accepter et demander la location</button>
+                        <button type="button" class="contrat-close btn">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script>
+            (function(){
+                var openBtn = document.getElementById('open-contrat-{{ bien.pk }}');
+                var modal = document.getElementById('contrat-modal-{{ bien.pk }}');
+                if(!openBtn || !modal) return;
+                var closes = modal.querySelectorAll('.contrat-close');
+                openBtn.addEventListener('click', function(){ modal.style.display='block'; document.body.style.overflow='hidden'; });
+                closes.forEach(function(b){ b.addEventListener('click', function(){ modal.style.display='none'; document.body.style.overflow=''; }); });
+                modal.addEventListener('click', function(e){ if(e.target===modal){ modal.style.display='none'; document.body.style.overflow=''; } });
+            })();
+        </script>
+    {% endif %}
+{% endif %}
+{% endblock %}

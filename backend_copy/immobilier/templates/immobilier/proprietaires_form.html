@@ -1,0 +1,15 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-proprietaires{% endblock %}
+
+{% block title %}{{ title }} - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+    <a href="{% url 'proprietaires_liste' %}">Annuler</a>
+</form>
+{% endblock %}

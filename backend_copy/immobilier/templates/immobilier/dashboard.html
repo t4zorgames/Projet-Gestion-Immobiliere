@@ -1,0 +1,15 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-dashboard{% endblock %}
+
+{% block title %}Dashboard - Gestion Immobilière{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<p>{{ description }}</p>
+
+<ul>
+    <li>Biens: {{ nb_biens }}</li>
+    <li>Propriétaires: {{ nb_proprietaires }}</li>
+    <li>Contrats actifs: {{ nb_contrats_actifs }}</li>
+</ul>
+{% endblock %}

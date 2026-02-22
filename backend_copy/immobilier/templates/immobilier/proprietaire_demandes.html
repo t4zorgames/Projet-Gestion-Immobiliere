@@ -1,0 +1,28 @@
+{% extends "immobilier/base.html" %}
+{% block page_theme %}theme-proprietaires{% endblock %}
+
+{% block title %}{{ title }} - Gestion Immobilière{% endblock %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+  {% if demandes %}
+    <table>
+      <thead>
+        <tr><th>Bien</th><th>Locataire</th><th>Date début</th><th>Date fin</th><th>Actif</th></tr>
+      </thead>
+      <tbody>
+        {% for d in demandes %}
+          <tr>
+            <td><a href="{% url 'biens_detail' d.bien.pk %}">{{ d.bien.titre }}</a></td>
+            <td>{{ d.locataire_nom }}</td>
+            <td>{{ d.date_debut }}</td>
+            <td>{{ d.date_fin }}</td>
+            <td>{% if d.actif %}Oui{% else %}Non{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Aucune demande pour vos biens pour le moment.</p>
+  {% endif %}
+{% endblock %}

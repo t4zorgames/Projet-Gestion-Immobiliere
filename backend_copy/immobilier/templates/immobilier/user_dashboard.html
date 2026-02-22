@@ -1,0 +1,42 @@
+{% extends "immobilier/base.html" %}
+{% block title %}Espace locataire{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+
+<section>
+  <h2>Biens disponibles</h2>
+  {% if recent_biens %}
+    <div class="stats-row">
+      <div class="stat">
+        <strong>{{ stats.total_available }}</strong>
+        <div>Biens disponibles</div>
+      </div>
+    </div>
+
+    <ul>
+      {% for b in recent_biens %}
+        <li><a href="{% url 'biens_detail' b.pk %}">{{ b.titre }}</a> — {{ b.ville }} — {{ b.loyer_mensuel }} FCFA</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Aucun bien disponible pour l'instant.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Mes demandes / contrats</h2>
+  {% if user_contrats.exists %}
+    <ul>
+      {% for c in user_contrats %}
+        <li>{{ c.locataire_nom }} — {{ c.bien.titre }} — du {{ c.date_debut }} au {{ c.date_fin }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Vous n'avez pas encore de demandes ou contrats enregistrés.</p>
+  {% endif %}
+</section>
+
+{% endblock %}
+
+<!-- Chart removed per user request -->

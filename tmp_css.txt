@@ -1,0 +1,60 @@
+:root{
+	--bg-1: #f8fafc;
+	--accent-1: #7c3aed; /* purple */
+	--accent-2: #06b6d4; /* teal */
+	--accent-3: #f97316; /* orange */
+	--muted: #6b7280;
+}
+
+body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; margin: 0; background: linear-gradient(180deg, #eef2ff 0%, #fff 100%); color: #0f172a; overflow-x: hidden; }
+.navbar { background: linear-gradient(90deg,var(--accent-1), #4f46e5 60%); padding: 0.8rem 1rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items:center; }
+.navbar a { color: #fff; text-decoration: none; font-size: 0.95rem; font-weight:600; }
+.navbar a:hover { text-decoration: underline; opacity: 0.95 }
+.logout-button{ background:none;border:none;color:#fff;cursor:pointer;font-size:0.95rem;padding:0;font-weight:600 }
+.container{ max-width:1100px; margin:2rem auto; background: rgba(255,255,255,0.85); padding:2rem; border-radius:12px; box-shadow:0 10px 30px rgba(2,6,23,0.08); }
+
+/* Buttons and links */
+button, .btn { background: linear-gradient(90deg,var(--accent-2),var(--accent-1)); color: white; border: none; padding: 0.5rem 0.9rem; border-radius:8px; cursor:pointer; }
+a.btn { text-decoration:none }
+
+/* Tables */
+table { border-collapse: collapse; width:100%; }
+table thead th { text-align:left; padding:0.6rem; background: rgba(15,23,42,0.05); color:var(--muted); }
+table tbody td { padding:0.7rem; border-bottom:1px solid rgba(2,6,23,0.04); }
+
+/* Rainbow bubbles background */
+.rainbow-bubbles{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; transition:transform .2s ease-out; }
+.rainbow-bubbles .bubble{ position:absolute; border-radius:50%; filter: blur(28px) saturate(110%); opacity:0.35; mix-blend-mode:screen; transform: translate3d(0,0,0); }
+
+/* different sizes, positions, colors and animations */
+.rainbow-bubbles .bubble:nth-child(1){ width:320px;height:320px; left:5%; top:5%; background: conic-gradient(var(--b1)); animation: float1 20s linear infinite; }
+.rainbow-bubbles .bubble:nth-child(2){ width:220px;height:220px; left:70%; top:10%; background: conic-gradient(var(--b2)); animation: float2 16s linear infinite; }
+.rainbow-bubbles .bubble:nth-child(3){ width:260px;height:260px; left:60%; top:60%; background: conic-gradient(var(--b3)); animation: float3 24s linear infinite; }
+.rainbow-bubbles .bubble:nth-child(4){ width:140px;height:140px; left:30%; top:78%; background: conic-gradient(var(--b4)); animation: float2 14s linear infinite; }
+.rainbow-bubbles .bubble:nth-child(5){ width:100px;height:100px; left:85%; top:78%; background: conic-gradient(var(--b5)); animation: float1 12s linear infinite; }
+
+@keyframes float1{ 0%{transform:translateY(0) translateX(0) rotate(0);}50%{transform:translateY(-40vh) translateX(6vw) rotate(90deg);}100%{transform:translateY(0) translateX(0) rotate(180deg);} }
+@keyframes float2{ 0%{transform:translateY(0) translateX(0) rotate(0);}50%{transform:translateY(-30vh) translateX(-8vw) rotate(-45deg);}100%{transform:translateY(0) translateX(0) rotate(0);} }
+@keyframes float3{ 0%{transform:translateY(0) translateX(0) rotate(0);}50%{transform:translateY(-50vh) translateX(10vw) rotate(120deg);}100%{transform:translateY(0) translateX(0) rotate(240deg);} }
+
+/* keep content above bubbles */
+nav.navbar, .container, .container * { position: relative; z-index: 2; }
+
+/* small responsive tweaks */
+@media (max-width:800px){ .container{ margin:1rem; padding:1rem } .rainbow-bubbles .bubble{ filter: blur(12px) } }
+
+/* mobile: hide large decorative bubbles to avoid clutter and perf issues */
+@media (max-width:600px){
+	.rainbow-bubbles{ display:none }
+}
+
+/* Additional page themes */
+body.theme-login{ --b1: #f5f3ff,#e9d5ff,#fbc2eb,#fecaca,#fff7ed; --b2: #eef2ff,#dbeafe,#e0f2fe,#f0f9ff,#fef3c7; --b3: #fef3c7,#fde68a,#fb7185,#f472b6,#fbc2eb; --b4: #f3e8ff,#e9d5ff,#fbc2eb,#ffd6e0,#fde68a; --b5: #f1f5f9,#e6f7ff,#cfe9ff,#e9d5ff,#fff7ed }
+body.theme-home{ --b1: #ffefba,#fff7cd,#fce7f3,#e9fdf5,#e0f2fe; --b2: #fff1f2,#ffe4e6,#ffd6d5,#ffd6a5,#ffefba; --b3: #e6f7ff,#cfe9ff,#a1c4fd,#bbf7d0,#fff7cd; --b4: #fbe7ff,#fbc2eb,#ffd6a5,#fff7cd,#e6f7ff; --b5: #fef9c3,#fff7ed,#fbe7ff,#ffd6a5,#e6f7ff }
+
+/* Theme variables for each main page */
+body.theme-default{ --b1: #ff5f6d,#ffc371,#f7ff00,#7de2ff,#bb7dff; --b2: #ffd1dc,#ff9a9e,#ffd89b,#b3ffab,#a0c4ff; --b3: #fbc2eb,#a6c1ee,#fda085,#f6d365,#fdcbf1; --b4: #fee140,#fa709a,#ff9966,#ffc371,#fceabb; --b5: #a8edea,#fed6e3,#fbc2eb,#f6d365,#ffd89b }
+body.theme-biens{ --b1: #a1c4fd,#c2e9fb,#a1c4fd,#b3ffab,#96e6a1; --b2: #06b6d4,#67e8f9,#7dd3fc,#34d399,#60a5fa; --b3: #8ec5fc,#e0c3fc,#a0c4ff,#cfe9ff,#bfe9ff; --b4: #60a5fa,#7dd3fc,#06b6d4,#34d399,#a1c4fd; --b5: #c2e9fb,#a1c4fd,#d1fae5,#c7f9ff,#e0f2fe }
+body.theme-contrats{ --b1: #7c3aed,#c084fc,#f472b6,#f97316,#f59e0b; --b2: #c084fc,#f0abfc,#fb7185,#fb923c,#f97316; --b3: #f472b6,#fb7185,#f0abfc,#fde68a,#f9a8d4; --b4: #f97316,#f59e0b,#fb923c,#f97316,#fb7185; --b5: #fce7f3,#fde68a,#f59e0b,#fb7185,#f0abfc }
+body.theme-proprietaires{ --b1: #c7f9cc,#b3ffab,#96e6a1,#34d399,#86efac; --b2: #a7f3d0,#6ee7b7,#34d399,#86efac,#bbf7d0; --b3: #d9f99d,#bef264,#86efac,#bbf7d0,#a7f3d0; --b4: #86efac,#34d399,#a7f3d0,#6ee7b7,#bbf7d0; --b5: #e6f7ff,#cfe9ff,#a1c4fd,#bfe9ff,#c7f9cc }
+body.theme-dashboard{ --b1: #fef3c7,#fde68a,#f9a8d4,#fbc2eb,#f1f5f9; --b2: #fef3c7,#fcd34d,#fb7185,#f97316,#fb7185; --b3: #fbc2eb,#f9a8d4,#fdba74,#fde68a,#fef9c3; --b4: #ffd6a5,#ffb8b8,#fda4af,#f9a8d4,#fde68a; --b5: #f1f5f9,#e6f7ff,#cfe9ff,#fef3c7,#ffd6a5 }

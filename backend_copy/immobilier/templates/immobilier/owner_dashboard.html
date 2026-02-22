@@ -1,0 +1,55 @@
+{% extends "immobilier/base.html" %}
+{% block title %}Espace propriétaire{% endblock %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<p>Bienvenue, {{ proprietaire.nom_complet }}.</p>
+
+<section>
+  <h2>Mes biens</h2>
+  {% if biens.exists %}
+    <div class="stats-row">
+      <div class="stat">
+        <strong>{{ stats.total_biens }}</strong>
+        <div>Total biens</div>
+      </div>
+      <div class="stat">
+        <strong>{{ stats.disponibles }}</strong>
+        <div>Disponibles</div>
+      </div>
+      <div class="stat">
+        <strong>{{ stats.indisponibles }}</strong>
+        <div>Occupés / Indisponibles</div>
+      </div>
+      <div class="stat">
+        <strong>{{ stats.demandes }}</strong>
+        <div>Demandes reçues</div>
+      </div>
+    </div>
+
+    <ul>
+      {% for b in biens %}
+        <li><a href="{% url 'biens_detail' b.pk %}">{{ b.titre }}</a> — {{ b.ville }} — {% if b.disponible %}Disponible{% else %}Indisponible{% endif %}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Vous n'avez pas encore de bien. <a href="{% url 'biens_ajouter' %}">Ajouter un bien</a></p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Demandes reçues</h2>
+  {% if demandes.exists %}
+    <ul>
+      {% for d in demandes %}
+        <li>{{ d.locataire_nom }} pour <a href="{% url 'biens_detail' d.bien.pk %}">{{ d.bien.titre }}</a> — du {{ d.date_debut }} au {{ d.date_fin }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Aucune demande pour le moment.</p>
+  {% endif %}
+</section>
+
+<!-- Chart removed per user request -->
+
+{% endblock %}
